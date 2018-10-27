@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 
 	"github.com/gorilla/mux"
 )
+
+var tmpl *template.Template
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Default format of %v", "string")
@@ -15,7 +18,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	fmt.Fprintf(w, "Looking for post id %v", id)
+	tmpl.ExecuteTemplate(w, "post.html", id)
 }
 
 func suchMiddleware(next http.Handler) http.Handler {
@@ -26,6 +29,7 @@ func suchMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	tmpl = template.Must(template.ParseGlob("templates/*.html"))
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainHandler)
 	r.HandleFunc("/post/{id}", postHandler)
