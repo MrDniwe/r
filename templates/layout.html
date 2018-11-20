@@ -1,6 +1,11 @@
+<!doctype html>
 <html>
-    {{template "header.html"}}
+    {{template "header.html" .}}
     <body>
+        {{define "content"}}
+            <p>Default content</p>
+        {{end}}
         {{template "content" .}}
+        {{template "footer.html" .}}
     </body>
 </html>
