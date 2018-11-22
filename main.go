@@ -13,20 +13,22 @@ var (
 	r    *mux.Router
 )
 
-func main() {
-
+func init() {
 	// Template and router init
 	tmpl = template.Must(template.ParseGlob("templates/*.html"))
 	r = mux.NewRouter()
+}
+
+func main() {
 
 	// content pages
-	r.HandleFunc("/", emptyHandler).Methods("GET")
-	r.HandleFunc("/post/{id}", emptyHandler).Methods("GET")
-	r.HandleFunc("/about", emptyHandler).Methods("GET")
+	r.HandleFunc("/", h["dummy"]).Methods("GET")
+	r.HandleFunc("/post/{id}", h["dummy"]).Methods("GET")
+	r.HandleFunc("/about", h["dummy"]).Methods("GET")
 
 	// API
 	a := r.PathPrefix("/api/v1").Subrouter()
-	a.HandleFunc("/test", emptyHandler).Methods("GET", "POST")
+	a.HandleFunc("/test", h["dummy"]).Methods("GET", "POST")
 
 	// Middlewares
 	r.Use(mwr["restUri"])
