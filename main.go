@@ -10,16 +10,29 @@ import (
 
 var (
 	tmpl *template.Template
+	r    *mux.Router
 )
 
 func main() {
-	tmpl = template.Must(template.ParseGlob("templates/*.html"))
-	r := mux.NewRouter()
-	r.HandleFunc("/", emptyHandler)
-	r.HandleFunc("/post/{id}", emptyHandler)
-	r.Use(mwr["restUri"])
-	http.Handle("/", r)
 
+	// Template and router init
+	tmpl = template.Must(template.ParseGlob("templates/*.html"))
+	r = mux.NewRouter()
+
+	// content pages
+	r.HandleFunc("/", emptyHandler).Methods("GET")
+	r.HandleFunc("/post/{id}", emptyHandler).Methods("GET")
+	r.HandleFunc("/about", emptyHandler).Methods("GET")
+
+	// API
+	a := r.PathPrefix("/api/v1").Subrouter()
+	a.HandleFunc("/test", emptyHandler).Methods("GET", "POST")
+
+	// Middlewares
+	r.Use(mwr["restUri"])
+
+	// Handle and serve
+	http.Handle("/", r)
 	fmt.Println("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)
 }
