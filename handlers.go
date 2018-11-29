@@ -36,4 +36,12 @@ func init() {
 		}
 	}
 
+	// Static pages handler
+	h["info"] = func(w http.ResponseWriter, r *http.Request) {
+		err := tmpl["info"].ExecuteTemplate(w, "static.html", r)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
 }

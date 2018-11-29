@@ -18,16 +18,10 @@ var (
 func init() {
 	// Template and router init
 	tmpl = make(templates)
-	b := template.Must(template.ParseFiles(
-		"templates/header.html",
-		"templates/footer.html",
-		"templates/navigation.html",
-		"templates/page-header.html",
-		"templates/page-footer.html",
-		"templates/layout.html"))
-	tmpl["dummy"] = template.Must(b.ParseFiles("templates/dummy.html"))
-	tmpl["home"] = template.Must(b.ParseFiles("templates/home.html"))
-	tmpl["post"] = template.Must(b.ParseFiles("templates/post.html"))
+	tmpl["dummy"] = template.Must(tmplFactory().ParseFiles("templates/dummy.html"))
+	tmpl["home"] = template.Must(tmplFactory().ParseFiles("templates/home.html"))
+	tmpl["post"] = template.Must(tmplFactory().ParseFiles("templates/post.html"))
+	tmpl["info"] = template.Must(tmplFactory().ParseFiles("templates/static.html"))
 	r = mux.NewRouter()
 }
 
@@ -36,7 +30,7 @@ func main() {
 	// content pages
 	r.HandleFunc("/", h["home"]).Methods("GET")
 	r.HandleFunc("/post/{id}", h["post"]).Methods("GET")
-	r.HandleFunc("/about", h["dummy"]).Methods("GET")
+	r.HandleFunc("/info/{page}", h["info"]).Methods("GET")
 
 	// API
 	a := r.PathPrefix("/api/v1").Subrouter()
@@ -54,4 +48,14 @@ func main() {
 
 	fmt.Println("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)
+}
+
+func tmplFactory() *template.Template {
+	return template.Must(template.ParseFiles(
+		"templates/header.html",
+		"templates/footer.html",
+		"templates/navigation.html",
+		"templates/page-header.html",
+		"templates/page-footer.html",
+		"templates/layout.html"))
 }
