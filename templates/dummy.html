@@ -1,0 +1,27 @@
+{{define "content"}}
+    <div class="tr">
+        <div class = "col-xs">
+            <h2 class="center">dummy controller</h1>
+        </div>
+    </div>
+    <div class="tr">
+        <div class = "col-xs">
+            <ul>
+                <li>
+                    Method: {{.Method}}
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    RequestURI: {{.RequestURI}}
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    Remote Address: {{.RemoteAddr}}
+                </li>
+            </ul>
+        </div>
+    </div>
+{{end}}
+{{template "layout.html" .}}
