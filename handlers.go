@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 )
 
@@ -14,34 +13,22 @@ func init() {
 
 	// Empty handler
 	h["dummy"] = func(w http.ResponseWriter, r *http.Request) {
-		err := tmpl["dummy"].ExecuteTemplate(w, "dummy.html", r)
-		if err != nil {
-			log.Println(err)
-		}
+		tmpl["dummy.html"].execute(w, r)
 	}
 
 	// Home handler
 	h["home"] = func(w http.ResponseWriter, r *http.Request) {
-		err := tmpl["home"].ExecuteTemplate(w, "home.html", r)
-		if err != nil {
-			log.Println(err)
-		}
+		tmpl["home.html"].execute(w, r)
 	}
 
 	// Post handler
 	h["post"] = func(w http.ResponseWriter, r *http.Request) {
-		err := tmpl["post"].ExecuteTemplate(w, "post.html", r)
-		if err != nil {
-			log.Println(err)
-		}
+		tmpl["post.html"].execute(w, r)
 	}
 
 	// Static pages handler
 	h["info"] = func(w http.ResponseWriter, r *http.Request) {
-		err := tmpl["info"].ExecuteTemplate(w, "static.html", r)
-		if err != nil {
-			log.Println(err)
-		}
+		tmpl["static.html"].execute(w, r)
 	}
 
 }

@@ -3,13 +3,44 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-type templates map[string]*template.Template
+// pseudo-class for working with complex templates
+type page struct {
+	t    *template.Template
+	path string
+	name string
+}
 
+// initialization of complex template
+func (p *page) new(path string, name string) {
+	p.path = path
+	p.name = name
+	p.t = template.Must(tmplFactory().ParseFiles(path))
+}
+
+// complex template executor
+func (p *page) execute(w http.ResponseWriter, r *http.Request) {
+	err := p.t.ExecuteTemplate(w, p.name, r)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// storage of complex templates
+type templates map[string]*page
+
+// right way to add another complex template in our set
+func (t *templates) add(path string, name string) {
+	(*t)[name] = &page{}
+	(*t)[name].new(path, name)
+}
+
+// global app vars
 var (
 	tmpl templates
 	r    *mux.Router
@@ -18,11 +49,12 @@ var (
 func init() {
 	// Template and router init
 	tmpl = make(templates)
-	tmpl["dummy"] = template.Must(tmplFactory().ParseFiles("templates/dummy.html"))
-	tmpl["home"] = template.Must(tmplFactory().ParseFiles("templates/home.html"))
-	tmpl["post"] = template.Must(tmplFactory().ParseFiles("templates/post.html"))
-	tmpl["info"] = template.Must(tmplFactory().ParseFiles("templates/static.html"))
+	tmpl.add("templates/dummy.html", "dummy.html")
+	tmpl.add("templates/home.html", "home.html")
+	tmpl.add("templates/post.html", "post.html")
+	tmpl.add("templates/static.html", "static.html")
 	r = mux.NewRouter()
+
 }
 
 func main() {
