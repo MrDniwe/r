@@ -13,22 +13,22 @@ func init() {
 
 	// Empty handler
 	h["dummy"] = func(w http.ResponseWriter, r *http.Request) {
-		tmpl["dummy.html"].execute(w, r)
+		pgs.items["dummy.html"].execute(w, r)
 	}
 
 	// Home handler
 	h["home"] = func(w http.ResponseWriter, r *http.Request) {
-		tmpl["home.html"].execute(w, r)
+		pgs.items["home.html"].execute(w, r)
 	}
 
 	// Post handler
 	h["post"] = func(w http.ResponseWriter, r *http.Request) {
-		tmpl["post.html"].execute(w, r)
+		pgs.items["post.html"].execute(w, r)
 	}
 
 	// Static pages handler
 	h["info"] = func(w http.ResponseWriter, r *http.Request) {
-		tmpl["static.html"].execute(w, r)
+		pgs.items["static.html"].execute(w, r)
 	}
 
 }

@@ -17,10 +17,11 @@ type page struct {
 }
 
 // initialization of complex template
-func (p *page) new(path string, name string) {
+func (p *page) new(source *template.Template, path string, name string) {
 	p.path = path
 	p.name = name
-	p.t = template.Must(tmplFactory().ParseFiles(path))
+	p.t = template.Must(source.Clone())
+	p.t = template.Must(p.t.ParseFiles(path))
 }
 
 // complex template executor
@@ -32,27 +33,42 @@ func (p *page) execute(w http.ResponseWriter, r *http.Request) {
 }
 
 // storage of complex templates
-type templates map[string]*page
+type pages struct {
+	items map[string]*page
+	root  *template.Template
+}
+
+func (t *pages) new() {
+	t.root = template.Must(template.ParseFiles(
+		"templates/header.html",
+		"templates/footer.html",
+		"templates/navigation.html",
+		"templates/page-header.html",
+		"templates/page-footer.html",
+		"templates/layout.html"))
+	t.items = make(map[string]*page)
+}
 
 // right way to add another complex template in our set
-func (t *templates) add(path string, name string) {
-	(*t)[name] = &page{}
-	(*t)[name].new(path, name)
+func (t *pages) add(path string, name string) {
+	t.items[name] = &page{}
+	t.items[name].new(t.root, path, name)
 }
 
 // global app vars
 var (
-	tmpl templates
-	r    *mux.Router
+	pgs *pages
+	r   *mux.Router
 )
 
 func init() {
 	// Template and router init
-	tmpl = make(templates)
-	tmpl.add("templates/dummy.html", "dummy.html")
-	tmpl.add("templates/home.html", "home.html")
-	tmpl.add("templates/post.html", "post.html")
-	tmpl.add("templates/static.html", "static.html")
+	pgs = &pages{}
+	pgs.new()
+	pgs.add("templates/dummy.html", "dummy.html")
+	pgs.add("templates/home.html", "home.html")
+	pgs.add("templates/post.html", "post.html")
+	pgs.add("templates/static.html", "static.html")
 	r = mux.NewRouter()
 
 }
@@ -80,14 +96,4 @@ func main() {
 
 	fmt.Println("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)
-}
-
-func tmplFactory() *template.Template {
-	return template.Must(template.ParseFiles(
-		"templates/header.html",
-		"templates/footer.html",
-		"templates/navigation.html",
-		"templates/page-header.html",
-		"templates/page-footer.html",
-		"templates/layout.html"))
 }
