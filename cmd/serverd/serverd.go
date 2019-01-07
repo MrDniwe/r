@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mrdniwe/r/internal/controllers"
-	view "github.com/mrdniwe/r/internal/views"
+	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
 )
 
@@ -19,9 +19,6 @@ var (
 func init() {
 	// Template and router init
 	pgs = view.New()
-	// pgs.add("templates/dummy.html", "dummy.html")
-	// pgs.add("templates/post.html", "post.html")
-	// pgs.add("templates/static.html", "static.html")
 	r = mux.NewRouter()
 
 }
@@ -31,23 +28,20 @@ func main() {
 	// content pages
 	p := r.PathPrefix("/").Subrouter()
 	controllers.Site(p, pgs)
-	// r.HandleFunc("/", h["home"]).Methods("GET")
-	// r.HandleFunc("/post/{id}", h["post"]).Methods("GET")
-	// r.HandleFunc("/info/{page}", h["info"]).Methods("GET")
 
 	// API
-	// a := r.PathPrefix("/api/v1").Subrouter()
-	// a.HandleFunc("/test", h["dummy"]).Methods("GET", "POST")
+	a := r.PathPrefix("/api/v1").Subrouter()
+	controllers.Api(a, pgs)
 
 	// Static
-	// static := http.FileServer(http.Dir("static"))
+	static := http.FileServer(http.Dir("static"))
 
 	// Middlewares
 	// r.Use(mwr["restUri"])
 
 	// Handle and serve
 	http.Handle("/", r)
-	// http.Handle("/static/", http.StripPrefix("/static/", static))
+	http.Handle("/static/", http.StripPrefix("/static/", static))
 
 	fmt.Println("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)

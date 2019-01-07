@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
 // Page is a pseudo-class for working with complex templates
@@ -41,7 +42,8 @@ func (t *Pages) New(paths []string) {
 }
 
 // right way to add another complex template in our set
-func (t *Pages) Add(path string, name string) {
-	t.Items[name] = &Page{}
-	t.Items[name].New(t.root, path, name)
+func (t *Pages) Add(path string, n string) {
+	name := filepath.Base(path)
+	t.Items[n] = &Page{}
+	t.Items[n].New(t.root, path, name)
 }
