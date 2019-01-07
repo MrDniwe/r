@@ -35,19 +35,13 @@ type Pages struct {
 	root  *template.Template
 }
 
-func (t *Pages) new() {
-	t.root = template.Must(template.ParseFiles(
-		"templates/header.html",
-		"templates/footer.html",
-		"templates/navigation.html",
-		"templates/page-header.html",
-		"templates/page-footer.html",
-		"templates/layout.html"))
+func (t *Pages) New(paths []string) {
+	t.root = template.Must(template.ParseFiles(paths...))
 	t.Items = make(map[string]*Page)
 }
 
 // right way to add another complex template in our set
-func (t *Pages) add(path string, name string) {
+func (t *Pages) Add(path string, name string) {
 	t.Items[name] = &Page{}
 	t.Items[name].New(t.root, path, name)
 }

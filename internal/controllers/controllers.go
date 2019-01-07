@@ -7,5 +7,5 @@ import (
 )
 
 func Site(router *mux.Router, t *templator.Pages) {
-	router.HandleFunc("/", handlers.Dummy(t)).Methods("GET")
+	router.HandleFunc("/", handlers.Home(t)).Methods("GET")
 }
