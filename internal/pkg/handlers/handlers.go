@@ -6,7 +6,7 @@ import (
 
 type handlers map[string]func(http.ResponseWriter, *http.Request)
 
-var h handlers
+var H handlers
 
 func init() {
 	h = make(handlers)
