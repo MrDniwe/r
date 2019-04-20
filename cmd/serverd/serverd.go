@@ -1,19 +1,27 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/mrdniwe/r/internal/controllers"
 	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
+	// "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // global app vars
 var (
 	pgs *templator.Pages
 	r   *mux.Router
+	l   *log.Logger
 )
 
 func init() {
@@ -24,6 +32,34 @@ func init() {
 }
 
 func main() {
+	// Включаем логирование
+	logfile, err := os.OpenFile("./log/consolidated.log", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatalf("Не получается открыть log-файл: %v", err)
+	}
+	defer logfile.Close()
+	l = log.New(logfile, "", log.Ldate|log.Ltime)
+
+	// --------
+	// подключение к Mongo
+	// --------
+	var client *mongo.Client
+	client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		l.Fatal(err)
+	}
+	// ждем подключения
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	if err != nil {
+		l.Fatal(err)
+	}
+	// пингуем на всякий случай
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		l.Fatal(err)
+	}
+	// всё ок, можем использовать монго!
 
 	// content pages
 	p := r.PathPrefix("/").Subrouter()
@@ -44,5 +80,6 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", static))
 
 	fmt.Println("Server is running on :3000")
+	l.Print("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)
 }

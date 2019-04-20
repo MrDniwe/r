@@ -6,3 +6,7 @@ services:
       - './dump/:/docker-entrypoint-initdb.d'
     ports:
       - '27017:27017'
+  mongo-express:
+    image: mongo-express
+    ports:
+      - '8081:8081'
