@@ -12,9 +12,10 @@ import (
 	"github.com/mrdniwe/r/internal/controllers"
 	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
-	// "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	article_repository "github.com/mrdniwe/r/internal/article/repository/mongo"
 )
 
 // global app vars
@@ -54,13 +55,14 @@ func main() {
 	if err != nil {
 		l.Fatal(err)
 	}
-	// пингуем на всякий случай
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		l.Fatal(err)
-	}
 	// всё ок, можем использовать монго!
+	article_repo := article_repository.NewRepository(client, l)
+	article_repo.L.Println("Article repo works fine")
 
+	// --------
+	// Роуты
+	// --------
+	//
 	// content pages
 	p := r.PathPrefix("/").Subrouter()
 	controllers.Site(p, pgs)

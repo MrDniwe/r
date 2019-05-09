@@ -1,6 +1,15 @@
 package models
 
 type Article struct {
-	active bool   `json:"active" bson:"active"`
-	title  string `json:"title bson:title"`
+	id     int
+	cat    int
+	access int
+	hidden int
+	header string
+	pre    string
+	text   string
+	date   int64
+	photo  string
+	views  int
+	yandex int
 }
