@@ -66,6 +66,8 @@ func main() {
 		l.Fatal(err)
 	}
 	article_uc.L.Println("Usecase works")
+	art, _ := article_uc.SingleArticle(1)
+	fmt.Println(art)
 
 	// --------
 	// Роуты

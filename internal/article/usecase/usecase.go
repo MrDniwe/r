@@ -19,3 +19,7 @@ type ArticleUC struct {
 func NewUsecase(repo repository.ArticleRepository, l *log.Logger) (*ArticleUC, error) {
 	return &ArticleUC{repo, l}, nil
 }
+
+func (u *ArticleUC) SingleArticle(id int) (*models.Article, error) {
+	return u.Repo.GetById(id)
+}
