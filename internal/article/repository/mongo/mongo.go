@@ -6,13 +6,13 @@ import (
 	"log"
 )
 
-func NewRepository(client *mongo.Client, l *log.Logger) *ArcticleRepo {
+func NewRepository(client *mongo.Client, l *log.Logger) (*ArcticleRepo, error) {
 	// пингуем на всякий случай
 	err := client.Ping(context.Background(), nil)
 	if err != nil {
 		l.Fatal(err)
 	}
-	return &ArcticleRepo{client, l}
+	return &ArcticleRepo{client, l}, nil
 }
 
 type ArcticleRepo struct {

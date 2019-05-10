@@ -16,6 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	article_repository "github.com/mrdniwe/r/internal/article/repository/mongo"
+	article_usecase "github.com/mrdniwe/r/internal/article/usecase"
 )
 
 // global app vars
@@ -56,8 +57,15 @@ func main() {
 		l.Fatal(err)
 	}
 	// всё ок, можем использовать монго!
-	article_repo := article_repository.NewRepository(client, l)
-	article_repo.L.Println("Article repo works fine")
+	article_repo, err := article_repository.NewRepository(client, l)
+	if err != nil {
+		l.Fatal(err)
+	}
+	article_uc, err := article_usecase.NewUsecase(article_repo, l)
+	if err != nil {
+		l.Fatal(err)
+	}
+	article_uc.L.Println("Usecase works")
 
 	// --------
 	// Роуты
