@@ -8,7 +8,7 @@ import (
 
 type ArticleUsecase interface {
 	SingleArticle(id int) (*models.Article, error)
-	LastArticles(amount int) (*[]models.Article, error)
+	LastArticles(amount int) ([]*models.Article, error)
 }
 
 type ArticleUC struct {
@@ -22,4 +22,12 @@ func NewUsecase(repo repository.ArticleRepository, l *log.Logger) (*ArticleUC, e
 
 func (u *ArticleUC) SingleArticle(id int) (*models.Article, error) {
 	return u.Repo.GetById(id)
+}
+
+func (u *ArticleUC) LastArticles(amount int) ([]*models.Article, error) {
+	as := make([]*models.Article, 3)
+	a, _ := u.Repo.GetById(1)
+	as[0] = a
+	return as, nil
+
 }
