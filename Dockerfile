@@ -1,5 +1,5 @@
 FROM golang:1.12
-RUN apt-get update && apt-get install go-dep -y
+RUN apt-get install curl -y && curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 WORKDIR /var/server
 COPY . .
 RUN dep ensure
