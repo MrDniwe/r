@@ -1,0 +1,17 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  APP_STAGING_IMAGE: registry.redirectme.net/region/app:staging
+
+build_staging:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker login -u $REGISTRY_LOGIN -p $REGISTRY_PASSWORD registry.redirectme.ru
+    - docker build -t $APP_STAGING_IMAGE .
+    - docker push $APP_STAGING_IMAGE
+  only:
+    - develop
