@@ -1,4 +1,5 @@
 FROM golang:1.12
+RUN apt update && apt install go-dep
 WORKDIR /var/server
 COPY . .
 RUN dep ensure
