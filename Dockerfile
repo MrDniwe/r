@@ -1,6 +1,6 @@
 FROM golang:1.12
 RUN apt-get install curl -y && curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-WORKDIR /var/server
+WORKDIR /go/src/app
 COPY . .
 RUN dep ensure
 RUN go build ./cmd/serverd/serverd.go
