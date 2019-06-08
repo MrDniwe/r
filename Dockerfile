@@ -5,6 +5,6 @@ ENV PATH="/go/src/github.com/mrdniwe/r:${PATH}"
 COPY . .
 RUN dep ensure
 RUN go build serverd.go
-RUN ls -lah
+RUN uname -a
 EXPOSE 3000
 ENTRYPOINT serverd
