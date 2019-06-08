@@ -3,6 +3,6 @@ RUN apt-get install curl -y && curl https://raw.githubusercontent.com/golang/dep
 WORKDIR /go/src/app
 COPY . .
 RUN dep ensure
-RUN go build ./cmd/serverd/serverd.go
+RUN go build ./serverd.go
 EXPOSE 3000
 CMD ['serverd']
