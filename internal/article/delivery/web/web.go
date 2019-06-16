@@ -21,6 +21,9 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")
+	// Static
+	static := http.FileServer(http.Dir("template/static"))
+	r.Handle("/static/", http.StripPrefix("/static/", static))
 }
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {

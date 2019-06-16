@@ -39,7 +39,7 @@ func main() {
 	// подключение к Mongo
 	// --------
 	var client *mongo.Client
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://mongo:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		l.Fatal(err)
 	}
@@ -72,15 +72,11 @@ func main() {
 	// создаем доставку для api
 	// TODO
 
-	// Static
-	static := http.FileServer(http.Dir("static"))
-
 	// Middlewares
 	// r.Use(mwr["restUri"])
 
 	// Handle and serve
 	http.Handle("/", r)
-	http.Handle("/static/", http.StripPrefix("/static/", static))
 
 	fmt.Println("Server is running on :3000")
 	l.Print("Server is running on :3000")
