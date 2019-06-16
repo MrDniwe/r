@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -24,25 +24,22 @@ var (
 )
 
 func init() {
+	// Настраиваем логгер
+	l = log.New()
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
 	// Template and router init
 	r = mux.NewRouter()
 
 }
 
 func main() {
-	// Включаем логирование
-	logfile, err := os.OpenFile("./log/consolidated.log", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatalf("Не получается открыть log-файл: %v", err)
-	}
-	defer logfile.Close()
-	l = log.New(logfile, "", log.Ldate|log.Ltime)
 
 	// --------
 	// подключение к Mongo
 	// --------
 	var client *mongo.Client
-	client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://mongo:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		l.Fatal(err)
 	}

@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 	"github.com/mrdniwe/r/internal/models"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
-func NewRepository(client *mongo.Client, l *log.Logger) (*ArcticleRepo, error) {
+func NewRepository(client *mongo.Client, l *logrus.Logger) (*ArcticleRepo, error) {
 	// пингуем на всякий случай
 	err := client.Ping(context.Background(), nil)
 	if err != nil {
@@ -18,7 +18,7 @@ func NewRepository(client *mongo.Client, l *log.Logger) (*ArcticleRepo, error) {
 
 type ArcticleRepo struct {
 	db *mongo.Client
-	L  *log.Logger
+	L  *logrus.Logger
 }
 
 func (a *ArcticleRepo) GetById(id int) (*models.Article, error) {

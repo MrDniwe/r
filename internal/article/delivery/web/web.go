@@ -5,17 +5,17 @@ import (
 	"github.com/mrdniwe/r/internal/article/usecase"
 	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
-	"log"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 type ArticleDelivery struct {
 	Usecase usecase.ArticleUsecase
-	L       *log.Logger
+	L       *logrus.Logger
 	T       *templator.Pages
 }
 
-func NewDelivery(uc usecase.ArticleUsecase, l *log.Logger, r *mux.Router) {
+func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 	view := view.New()
 	ad := &ArticleDelivery{uc, l, view}
 	r.HandleFunc("/", ad.Home()).Methods("GET")

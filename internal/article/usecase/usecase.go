@@ -3,7 +3,7 @@ package usecase
 import (
 	"github.com/mrdniwe/r/internal/article/repository"
 	"github.com/mrdniwe/r/internal/models"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type ArticleUsecase interface {
@@ -13,10 +13,10 @@ type ArticleUsecase interface {
 
 type ArticleUC struct {
 	Repo repository.ArticleRepository
-	L    *log.Logger
+	L    *logrus.Logger
 }
 
-func NewUsecase(repo repository.ArticleRepository, l *log.Logger) (*ArticleUC, error) {
+func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger) (*ArticleUC, error) {
 	return &ArticleUC{repo, l}, nil
 }
 

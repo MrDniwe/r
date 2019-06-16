@@ -20,6 +20,18 @@
   version = "v1.7.1"
 
 [[projects]]
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/xdg/scram"
   packages = ["."]
@@ -50,6 +62,12 @@
   revision = "56d357773e8497dfd526f0727e187720d1093757"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "15dcb6c0061f497a3f66e3ea034b629c6dd4d99e"
+
+[[projects]]
   name = "golang.org/x/text"
   packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
@@ -58,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8d686cb47897f7c0b5934a10962dddabf040873ce23414bd68e42ecbe574d286"
+  inputs-digest = "0389ac0bf903b3f46b25f1553bef31b7a50f86b72bf9fcfc57d292eec530e2a0"
   solver-name = "gps-cdcl"
   solver-version = 1
