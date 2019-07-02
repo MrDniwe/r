@@ -4,6 +4,7 @@ stages:
 
 variables:
   APP_STAGING_IMAGE: registry.redirectme.net/region/app:staging
+  APP_FOLDER: r
 
 build_staging:
   stage: build
@@ -13,5 +14,18 @@ build_staging:
     - docker login -u $REGISTRY_LOGIN -p $REGISTRY_PASSWORD registry.redirectme.net
     - docker build -t $APP_STAGING_IMAGE .
     - docker push $APP_STAGING_IMAGE
+  only:
+    - develop
+      
+restart_staging:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - sshpass -V
+    - export SSHPASS=$DEV_PASS
+    - sshpass -e ssh $DEV_LOGIN@mrdniwe.redirectme.net '/var/server/deploy.sh' $APP_FOLDER $REGISTRY_LOGIN $REGISTRY_PASSWORD $APP_STAGING_IMAGE
   only:
     - develop
