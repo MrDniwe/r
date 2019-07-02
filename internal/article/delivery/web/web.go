@@ -6,6 +6,7 @@ import (
 	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
 	"github.com/sirupsen/logrus"
+	"mime"
 	"net/http"
 )
 
