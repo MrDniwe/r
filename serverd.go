@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -44,6 +45,10 @@ func main() {
 	v.BindEnv("mongoServer", "MONGO_SERVER")
 	v.BindEnv("mongoPort", "MONGO_PORT")
 
+	// слушаем события ОС в канал
+	osChan := make(chan os.Signal)
+	signal.Notify(osChan, syscall.SIGINT, syscall.SIGTERM)
+
 	// --------
 	// подключение к Mongo
 	// --------
@@ -78,16 +83,18 @@ func main() {
 	web_router := r.PathPrefix("/").Subrouter()
 	article_delivery_web.NewDelivery(article_uc, l, web_router)
 
-	// создаем доставку для api
-	// TODO
-
-	// Middlewares
-	// r.Use(mwr["restUri"])
-
 	// Handle and serve
 	http.Handle("/", r)
 
-	fmt.Println("Server is running on :3000")
+	// слушаем события выключения приложения
+	go func() {
+		sig := <-osChan
+		l.Printf("Termination signal --%v-- received", sig)
+		ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+		client.Disconnect(ctx)
+		l.Print("Shutting down")
+		os.Exit(0)
+	}()
 	l.Print("Server is running on :3000")
 	http.ListenAndServe(":3000", nil)
 }
