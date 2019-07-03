@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -21,9 +22,12 @@ import (
 var (
 	r *mux.Router
 	l *log.Logger
+	v *viper.Viper
 )
 
 func init() {
+	// Подключение конфигурации
+	v = viper.New()
 	// Настраиваем логгер
 	l = log.New()
 	log.SetFormatter(&log.JSONFormatter{})
@@ -34,12 +38,17 @@ func init() {
 }
 
 func main() {
+	// определяем конфигурацию
+	v.SetDefault("mongoServer", "localhost")
+	v.SetDefault("mongoPort", "27017")
+	v.BindEnv("mongoServer", "MONGO_SERVER")
+	v.BindEnv("mongoPort", "MONGO_PORT")
 
 	// --------
 	// подключение к Mongo
 	// --------
 	var client *mongo.Client
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://mongo:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://" + v.GetString("mongoServer") + ":" + v.GetString("mongoPort")))
 	if err != nil {
 		l.Fatal(err)
 	}
