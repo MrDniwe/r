@@ -28,6 +28,7 @@ func (u *ArticleUC) LastArticles(amount int) ([]*models.Article, error) {
 	as := make([]*models.Article, 3)
 	a, _ := u.Repo.GetById("lal")
 	as[0] = a
+	as[1] = a
+	as[2] = a
 	return as, nil
-
 }

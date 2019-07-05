@@ -3,6 +3,7 @@ package delivery
 import (
 	"github.com/gorilla/mux"
 	"github.com/mrdniwe/r/internal/article/usecase"
+	"github.com/mrdniwe/r/internal/models"
 	"github.com/mrdniwe/r/internal/view"
 	"github.com/mrdniwe/r/pkg/templator"
 	"github.com/sirupsen/logrus"
@@ -28,7 +29,16 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ad.T.Items["mainpage"].Execute(w, r)
+		articles, err := ad.Usecase.LastArticles(5)
+		if err != nil {
+			ad.L.Fatal(err)
+		}
+		topArticle := *articles[0]
+		mp := models.MainPage{
+			articles[1:],
+			topArticle,
+		}
+		ad.T.Items["mainpage"].Execute(w, mp)
 	}
 }
 
