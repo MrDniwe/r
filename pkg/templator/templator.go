@@ -25,8 +25,8 @@ func (p *Page) New(source *template.Template, path string, name string) {
 }
 
 // Execute - runs current template with stored name and given Reader and Writer
-func (p *Page) Execute(w http.ResponseWriter, r *http.Request) {
-	err := p.t.ExecuteTemplate(w, p.name, r)
+func (p *Page) Execute(w http.ResponseWriter, data interface{}) {
+	err := p.t.ExecuteTemplate(w, p.name, data)
 	if err != nil {
 		log.Println(err)
 	}

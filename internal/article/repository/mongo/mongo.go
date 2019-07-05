@@ -21,7 +21,7 @@ type ArcticleRepo struct {
 	L  *logrus.Logger
 }
 
-func (a *ArcticleRepo) GetById(id int) (*models.Article, error) {
+func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
 	return &models.Article{
 		Id:     id,
 		Header: "Заголовок статьи",

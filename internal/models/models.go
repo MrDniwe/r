@@ -1,7 +1,7 @@
 package models
 
 type Article struct {
-	Id     int
+	Id     string
 	Cat    int
 	Access int
 	Hidden int

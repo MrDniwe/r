@@ -7,7 +7,7 @@ import (
 )
 
 type ArticleUsecase interface {
-	SingleArticle(id int) (*models.Article, error)
+	SingleArticle(id string) (*models.Article, error)
 	LastArticles(amount int) ([]*models.Article, error)
 }
 
@@ -20,13 +20,13 @@ func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger) (*ArticleUC
 	return &ArticleUC{repo, l}, nil
 }
 
-func (u *ArticleUC) SingleArticle(id int) (*models.Article, error) {
+func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 	return u.Repo.GetById(id)
 }
 
 func (u *ArticleUC) LastArticles(amount int) ([]*models.Article, error) {
 	as := make([]*models.Article, 3)
-	a, _ := u.Repo.GetById(1)
+	a, _ := u.Repo.GetById("lal")
 	as[0] = a
 	return as, nil
 

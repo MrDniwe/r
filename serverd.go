@@ -14,12 +14,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	article_delivery_web "github.com/mrdniwe/r/internal/article/delivery/web"
-	article_repository "github.com/mrdniwe/r/internal/article/repository/mongo"
-	article_usecase "github.com/mrdniwe/r/internal/article/usecase"
+	articleDeliveryWeb "github.com/mrdniwe/r/internal/article/delivery/web"
+	articleRepository "github.com/mrdniwe/r/internal/article/repository/mongo"
+	articleUsecase "github.com/mrdniwe/r/internal/article/usecase"
 )
 
-// global app vars
 var (
 	r *mux.Router
 	l *log.Logger
@@ -58,19 +57,20 @@ func main() {
 		l.Fatal(err)
 	}
 	// ждем подключения
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		l.Fatal(err)
 	}
 	// всё ок, можем использовать монго!
 	// создаем репозиторий с имеющимся подключением
-	article_repo, err := article_repository.NewRepository(client, l)
+	articleRepo, err := articleRepository.NewRepository(client, l)
 	if err != nil {
 		l.Fatal(err)
 	}
 	// создаем юзкейс с только что созданным репозиторием
-	article_uc, err := article_usecase.NewUsecase(article_repo, l)
+	articleUc, err := articleUsecase.NewUsecase(articleRepo, l)
 	if err != nil {
 		l.Fatal(err)
 	}
@@ -80,8 +80,8 @@ func main() {
 	// --------
 	//
 	// создаем доставку для http
-	web_router := r.PathPrefix("/").Subrouter()
-	article_delivery_web.NewDelivery(article_uc, l, web_router)
+	webRouter := r.PathPrefix("/").Subrouter()
+	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter)
 
 	// Handle and serve
 	http.Handle("/", r)
@@ -90,7 +90,8 @@ func main() {
 	go func() {
 		sig := <-osChan
 		l.Printf("Termination signal --%v-- received", sig)
-		ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
 		client.Disconnect(ctx)
 		l.Print("Shutting down")
 		os.Exit(0)

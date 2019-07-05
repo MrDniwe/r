@@ -34,7 +34,12 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 
 func (ad *ArticleDelivery) Post() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ad.T.Items["post"].Execute(w, r)
+		vars := mux.Vars(r)
+		a, err := ad.Usecase.SingleArticle(vars["id"])
+		if err != nil {
+			ad.L.Fatal(err)
+		}
+		ad.T.Items["post"].Execute(w, a)
 	}
 }
 

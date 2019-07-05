@@ -14,3 +14,5 @@ services:
     image: registry.redirectme.net/region/app:staging
     ports:
       - '3030:3000'
+    environment:
+      - MONGO_SERVER=mongo
