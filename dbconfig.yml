@@ -1,0 +1,5 @@
+development:
+  dialect: postgres
+  datasource: dbname=development sslmode=disable user=development password=development host=localhost port=5434
+  dir: migrations
+  table: migrations
