@@ -3,3 +3,8 @@ development:
   datasource: dbname=development sslmode=disable user=development password=development host=localhost port=5434
   dir: migrations
   table: migrations
+staging:
+  dialect: postgres
+  datasource: dbname=staging sslmode=disable user=staging password=staging host=db port=5432
+  dir: migrations
+  table: migrations
