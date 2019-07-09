@@ -1,21 +1,5 @@
 version: '3.1'
 services:
-  mongo: 
-    image: mongo
-    volumes:
-      - './dump/:/docker-entrypoint-initdb.d'
-    ports:
-      - '27017:27017'
-  mongo-express:
-    image: mongo-express
-    ports:
-      - '8081:8081'
-  app:
-    image: registry.redirectme.net/region/app:staging
-    ports:
-      - '3030:3000'
-    environment:
-      - MONGO_SERVER=mongo
   db:
     image: "registry.redirectme.net/postgres11:full"
     environment:
