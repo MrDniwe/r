@@ -1,6 +1,9 @@
 package models
 
-import "html/template"
+import (
+	"html/template"
+	"time"
+)
 
 type Article struct {
 	Id      string
@@ -8,7 +11,7 @@ type Article struct {
 	Header  string
 	Lead    string
 	Text    template.HTML
-	Date    int64
+	Date    time.Time
 	Photo   string
 	Views   int
 }

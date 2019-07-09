@@ -17,10 +17,15 @@ type ArcticleRepo struct {
 }
 
 func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
-	return &models.Article{
-		Id:     id,
-		Header: "Заголовок статьи PG",
-		Lead:   "Здесь очень интересная подводка",
-		Text:   "Тут сам текст статьи. <b>С тегами!</b><p>И прочая шляпа</p>",
-	}, nil
+	query := `select 
+	  uuid, title, lead, body, active_from, views
+	from articles
+	  where is_visible=true
+	  and uuid=$1`
+	row := a.db.QueryRow(query, id)
+	article := &models.Article{}
+	if err := row.Scan(&article.Id, &article.Header, &article.Lead, &article.Text, &article.Date, &article.Views); err != nil {
+		return nil, err
+	}
+	return article, nil
 }

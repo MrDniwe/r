@@ -38,8 +38,8 @@ func init() {
 
 func main() {
 	// определяем конфигурацию
-	v.SetDefault("pgHost", "/localhost")
-	v.SetDefault("pgPort", "5432")
+	v.SetDefault("pgHost", "localhost")
+	v.SetDefault("pgPort", "5434")
 	v.SetDefault("pgUser", "development")
 	v.SetDefault("pgPassword", "development")
 	v.SetDefault("pgDbname", "development")
@@ -56,7 +56,7 @@ func main() {
 	// --------
 	// подключение к БД
 	// --------
-	connStr := fmt.Sprintf("user=%v dbname=%v sslmode=disable port=%v password=%v host=%v", v.GetString("pgUser"), v.GetString("gUser"), v.GetString("pgDbname"), v.GetString("pgPort"), v.GetString("pgPassword"), v.GetString("pgHost"))
+	connStr := fmt.Sprintf("user=%v dbname=%v sslmode=disable port=%v password=%v host=%v", v.GetString("pgUser"), v.GetString("pgDbname"), v.GetString("pgPort"), v.GetString("pgPassword"), v.GetString("pgHost"))
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		l.Fatal(err)
