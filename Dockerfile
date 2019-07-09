@@ -15,4 +15,4 @@ COPY --from=builder /go/src/github.com/mrdniwe/r/serverd .
 COPY --from=builder /go/src/github.com/mrdniwe/r/default-entrypoint.sh .
 COPY --from=builder /go/src/github.com/mrdniwe/r/template ./template
 ENV PATH="/go/bin:${PATH}"
-ENTRYPOINT [ "/go/bin/serverd" ]
+ENTRYPOINT [ ]
