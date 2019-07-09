@@ -7,7 +7,7 @@ COPY . .
 RUN dep ensure
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build serverd.go
 
-FROM scratch 
+FROM alpine 
 WORKDIR /go/bin
 COPY --from=builder /go/bin/sql-migrate .
 COPY --from=builder /go/src/github.com/mrdniwe/r/migrations ./migrations
