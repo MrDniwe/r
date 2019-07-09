@@ -3,17 +3,14 @@ package models
 import "html/template"
 
 type Article struct {
-	Id     string
-	Cat    int
-	Access int
-	Hidden int
-	Header string
-	Pre    string
-	Text   template.HTML
-	Date   int64
-	Photo  string
-	Views  int
-	Yandex int
+	Id      string
+	Visible bool
+	Header  string
+	Lead    string
+	Text    template.HTML
+	Date    int64
+	Photo   string
+	Views   int
 }
 
 type MainPage struct {
