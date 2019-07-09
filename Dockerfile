@@ -14,5 +14,6 @@ COPY --from=builder /go/src/github.com/mrdniwe/r/migrations ./migrations
 COPY --from=builder /go/src/github.com/mrdniwe/r/serverd .
 COPY --from=builder /go/src/github.com/mrdniwe/r/default-entrypoint.sh .
 COPY --from=builder /go/src/github.com/mrdniwe/r/template ./template
+RUN ls -lah
 ENV PATH="/go/bin:${PATH}"
 ENTRYPOINT [ ]
