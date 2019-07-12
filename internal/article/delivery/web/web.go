@@ -29,7 +29,7 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		articles, err := ad.Usecase.LastArticles(5)
+		articles, err := ad.Usecase.LastArticles(11)
 		if err != nil {
 			ad.L.Fatal(err)
 		}

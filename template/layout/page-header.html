@@ -8,8 +8,11 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="site-heading">
-          <h1>{{.Header}}</h1>
-          <span class="subheading">{{.Lead}}</span>
+          <a href="/post/{{ .Id }}">
+            <h1>{{.Header}}</h1>
+            <span class="subheading">{{.Lead}}</span>
+          </a>
+          <p class="post-meta">{{ .Date.Local.Format "02.01.2006" }}</p>
         </div>
       </div>
     </div>
