@@ -4,10 +4,24 @@
     name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no"
   />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
+  {{ if .Lead }}
+  <meta name="description" content="{{ .Lead }}" />
+  {{ else }}
+  <meta
+    name="description"
+    content="Информационное агентство Регион 57 - аналитика, публицистика, региональная политология"
+  />
+  {{ end }}
+  <meta
+    name="author"
+    content="Информационное агентство Регион 57, город Орёл"
+  />
 
-  <title>Clean Blog - Start Bootstrap Theme</title>
+  {{ if .Header }}
+  <title>Регион 57 &ndash; {{ .Header }}</title>
+  {{ else }}
+  <title>Регион 57</title>
+  {{ end }}
 
   <!-- Bootstrap core CSS -->
   <link
@@ -33,5 +47,5 @@
   />
 
   <!-- Custom styles for this template -->
-  <link href="/static/css/clean-blog.min.css" rel="stylesheet" />
+  <link href="/static/css/clean-blog.css" rel="stylesheet" />
 </head>
