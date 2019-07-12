@@ -16,6 +16,7 @@ import (
 	articleDeliveryWeb "github.com/mrdniwe/r/internal/article/delivery/web"
 	articleRepository "github.com/mrdniwe/r/internal/article/repository/postgres"
 	articleUsecase "github.com/mrdniwe/r/internal/article/usecase"
+	filesDelivery "github.com/mrdniwe/r/internal/file"
 )
 
 var (
@@ -84,6 +85,9 @@ func main() {
 	// создаем доставку для http
 	webRouter := r.PathPrefix("/").Subrouter()
 	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter)
+	// доставка для пробрасываемых файлов
+	filesRouter := r.PathPrefix("/cfs").Subrouter()
+	filesDelivery.NewDelivery(l, filesRouter, v)
 
 	// Handle and serve
 	http.Handle("/", r)
