@@ -4,6 +4,7 @@ import (
 	"github.com/mrdniwe/r/internal/article/repository"
 	"github.com/mrdniwe/r/internal/models"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type ArticleUsecase interface {
@@ -14,16 +15,33 @@ type ArticleUsecase interface {
 type ArticleUC struct {
 	Repo repository.ArticleRepository
 	L    *logrus.Logger
+	V    *viper.Viper
 }
 
-func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger) (*ArticleUC, error) {
-	return &ArticleUC{repo, l}, nil
+func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger, v *viper.Viper) (*ArticleUC, error) {
+	return &ArticleUC{repo, l, v}, nil
 }
 
 func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
-	return u.Repo.GetById(id)
+	a, err := u.Repo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+	if len(a.Photo) > 0 {
+		a.Photo = u.V.GetString("s3URIPrefix") + "/" + a.Photo
+	}
+	return a, nil
 }
 
 func (u *ArticleUC) LastArticles(amount int) ([]*models.Article, error) {
-	return u.Repo.GetLastNArticles(amount)
+	al, err := u.Repo.GetLastNArticles(amount)
+	if err != nil {
+		return nil, err
+	}
+	for _, a := range al {
+		if len(a.Photo) > 0 {
+			a.Photo = u.V.GetString("s3URIPrefix") + "/" + a.Photo
+		}
+	}
+	return al, nil
 }

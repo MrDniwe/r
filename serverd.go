@@ -43,11 +43,13 @@ func main() {
 	v.SetDefault("pgUser", "development")
 	v.SetDefault("pgPassword", "development")
 	v.SetDefault("pgDbname", "development")
+	v.SetDefault("s3URIPrefix", "https://r57.s3.eu-central-1.amazonaws.com")
 	v.BindEnv("pgHost", "PG_HOST")
 	v.BindEnv("pgPort", "PG_PORT")
 	v.BindEnv("pgUser", "PG_USER")
 	v.BindEnv("pgPassword", "PG_PASSWORD")
 	v.BindEnv("pgDbname", "PG_DATABASE")
+	v.BindEnv("s3URIPrefix", "S3_URI_PREFIX")
 
 	// слушаем события ОС в канал
 	osChan := make(chan os.Signal)
@@ -69,7 +71,7 @@ func main() {
 		os.Exit(1)
 	}
 	// создаем юзкейс с только что созданным репозиторием
-	articleUc, err := articleUsecase.NewUsecase(articleRepo, l)
+	articleUc, err := articleUsecase.NewUsecase(articleRepo, l, v)
 	if err != nil {
 		l.Fatal(err)
 		os.Exit(1)
