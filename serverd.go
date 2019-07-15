@@ -30,7 +30,8 @@ func init() {
 	v = viper.New()
 	// Настраиваем логгер
 	l = log.New()
-	l.SetFormatter(&log.JSONFormatter{})
+	// l.SetFormatter(&log.JSONFormatter{})
+	l.SetFormatter(&log.TextFormatter{})
 	l.SetOutput(os.Stdout)
 	// Template and router init
 	r = mux.NewRouter()

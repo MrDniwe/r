@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
+	"github.com/mrdniwe/r/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"html/template"
 )
 
@@ -21,10 +23,20 @@ type scanner interface {
 	Scan(...interface{}) error
 }
 
-func scanArticle(row scanner) (*models.Article, error) {
+func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 	articleNull := articleNullable{}
 	if err := row.Scan(&articleNull.Id, &articleNull.Header, &articleNull.Lead, &articleNull.Text, &articleNull.Date, &articleNull.Views, &articleNull.Photo); err != nil {
-		return nil, err
+		switch {
+		case err == sql.ErrNoRows:
+			return nil, errors.NotFoundErr
+		default:
+			a.L.WithFields(logrus.Fields{
+				"type": "Postgres error",
+				"in":   "Scan",
+			}).Error(err)
+			return nil, errors.ServerErr
+		}
+		//TODO писать стектрейс, унифицировать типы ошибок
 	}
 	article := &models.Article{
 		Id:      articleNull.Id,

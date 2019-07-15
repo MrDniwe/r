@@ -25,9 +25,7 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")
 	// errors
 	errh := r.PathPrefix("/errors/").Subrouter()
-	errh.HandleFunc("/notfound", ad.NotFoundErr())
-	errh.HandleFunc("/badrequest", ad.BadRequestErr())
-	//TODO остальные ошибки
+	errh.HandleFunc("/{errtype}", ad.ErrHandler())
 	// Static
 	static := http.FileServer(http.Dir("template/static"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", static))
@@ -37,7 +35,8 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		articles, err := ad.Usecase.LastArticles(11)
 		if err != nil {
-			ad.L.Fatal(err)
+			errors.HandleError(err, w, r)
+			return
 		}
 		topArticle := *articles[0]
 		mp := models.MainPage{
