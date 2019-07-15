@@ -20,7 +20,7 @@ func HandleError(err error, w http.ResponseWriter, r *http.Request) {
 	case NotFoundErr:
 		http.Redirect(w, r, "/errors/notfound", http.StatusMovedPermanently)
 	case ServerError:
-		http.Redirect(w, r, "/errors/notfound", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/server", http.StatusMovedPermanently)
 	case ForbiddenError:
 		http.Redirect(w, r, "/errors/forbidden", http.StatusMovedPermanently)
 	case UnknownError:

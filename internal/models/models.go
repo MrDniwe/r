@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+type Site struct {
+	Header string
+	Lead   string
+}
+
 type Article struct {
 	Id      string
 	Visible bool

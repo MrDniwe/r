@@ -440,3 +440,13 @@ footer .copyright {
   font-size: 16px;
   padding: 25px 35px;
 }
+
+.errorpage h1 {
+  margin-top: 30%;
+  text-align: center;
+}
+
+.errorpage h2 {
+  margin-bottom: 20%;
+  text-align: center;
+}

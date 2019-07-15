@@ -1,13 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    {{template "header.html" .}}
-    <body>
-        {{template "navigation.html" .}}
-        {{template "page-header.html" .}}
-        {{block "content" .}}
-            <p>Default content</p>
-        {{end}}
-        {{template "page-footer.html" .}}
-        {{template "footer.html" .}}
-    </body>
+  {{template "header.html" .}}
+  <body>
+    {{template "navigation.html" .}} {{block "content" .}}
+    <p>Default content</p>
+    {{end}} {{template "page-footer.html" .}} {{template "footer.html" .}}
+  </body>
 </html>

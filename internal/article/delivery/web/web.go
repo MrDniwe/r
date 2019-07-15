@@ -23,6 +23,11 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")
+	// errors
+	errh := r.PathPrefix("/errors/").Subrouter()
+	errh.HandleFunc("/notfound", ad.NotFoundErr())
+	errh.HandleFunc("/badrequest", ad.BadRequestErr())
+	//TODO остальные ошибки
 	// Static
 	static := http.FileServer(http.Dir("template/static"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", static))
@@ -58,11 +63,5 @@ func (ad *ArticleDelivery) Post() http.HandlerFunc {
 func (ad *ArticleDelivery) Static() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ad.T.Items["static"].Execute(w, r)
-	}
-}
-
-func (ad *ArticleDelivery) Dummy() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ad.T.Items["dummy"].Execute(w, r)
 	}
 }

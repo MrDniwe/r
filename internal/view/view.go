@@ -15,6 +15,10 @@ func New() *templator.Pages {
 	p.Add("template/pages/home.html", "mainpage")
 	p.Add("template/pages/post.html", "post")
 	p.Add("template/pages/static.html", "static")
-	p.Add("template/pages/dummy.html", "dummy")
+	p.Add("template/errors/notfound.html", "notfound")
+	p.Add("template/errors/badrequest.html", "badrequest")
+	p.Add("template/errors/server.html", "server")
+	p.Add("template/errors/forbidden.html", "forbidden")
+	p.Add("template/errors/unknown.html", "unknown")
 	return p
 }
