@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/mrdniwe/pkg/errors"
 	"github.com/mrdniwe/r/internal/article/usecase"
 	"github.com/mrdniwe/r/internal/models"
 	"github.com/mrdniwe/r/internal/view"
@@ -47,7 +48,8 @@ func (ad *ArticleDelivery) Post() http.HandlerFunc {
 		vars := mux.Vars(r)
 		a, err := ad.Usecase.SingleArticle(vars["id"])
 		if err != nil {
-			ad.L.Fatal(err)
+			errors.HandleError(err, w, r)
+			return
 		}
 		ad.T.Items["post"].Execute(w, a)
 	}

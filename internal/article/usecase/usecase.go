@@ -3,6 +3,8 @@ package usecase
 import (
 	"github.com/mrdniwe/r/internal/article/repository"
 	"github.com/mrdniwe/r/internal/models"
+	uuid "github.com/nu7hatch/gouuid"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -23,7 +25,17 @@ func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger, v *viper.Vi
 }
 
 func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
-	a, err := u.Repo.GetById(id)
+	// валидируем uuid
+	u, err := uuid.ParseHex(id)
+	if err != nil {
+		ad.L.WithFields(logrus.Fields{
+			"type":  "Bad request",
+			"in":    "UUID",
+			"given": vars["id"],
+		}).Info(err)
+		return nil, errors.BadRequestErr
+	}
+	a, err := u.Repo.GetById(u.String())
 	if err != nil {
 		return nil, err
 	}

@@ -38,6 +38,12 @@
   version = "v1.0.2"
 
 [[projects]]
+  name = "github.com/lib/pq"
+  packages = [".","oid","scram"]
+  revision = "bc6a3c0594130b1e34005880bc600b6d3f49fa7f"
+  version = "v1.1.1"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "de8848e004dd33dc07a2947b3d76f618a7fc7ef1"
@@ -50,10 +56,22 @@
   version = "v1.1.2"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/nu7hatch/gouuid"
+  packages = ["."]
+  revision = "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+
+[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "728039f679cbcd4f6a54e080d2219a4c4928c546"
   version = "v1.4.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -142,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "994ac91321e7abb4c4547213c72f79ea0552b33b0374f5de8d96396c1537a450"
+  inputs-digest = "4eabafe538f94b7467570a1ce6825638bcd5729b2a541d0f0dc212d961fdd56b"
   solver-name = "gps-cdcl"
   solver-version = 1
