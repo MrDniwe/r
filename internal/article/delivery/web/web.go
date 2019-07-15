@@ -2,10 +2,10 @@ package delivery
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/mrdniwe/pkg/errors"
 	"github.com/mrdniwe/r/internal/article/usecase"
 	"github.com/mrdniwe/r/internal/models"
 	"github.com/mrdniwe/r/internal/view"
+	"github.com/mrdniwe/r/pkg/errors"
 	"github.com/mrdniwe/r/pkg/templator"
 	"github.com/sirupsen/logrus"
 	"net/http"
