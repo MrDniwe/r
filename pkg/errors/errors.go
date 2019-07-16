@@ -6,14 +6,13 @@ import (
 	"net/http"
 )
 
-//TODO унифицировать типы ошибок
 const (
-	ServerError     string = "Server error"
-	BadRequestError string = "Bad request"
+	PostgresError   string = "Postgres request error"
+	ValidationError string = "Validation error"
 )
 
 var (
-	BadRequestErr = errors.New(BadRequestError)
+	BadRequestErr = errors.New("Bad request")
 	NotFoundErr   = errors.New("Not found")
 	ServerErr     = errors.New("Server error")
 	ForbiddenErr  = errors.New("Forbidden")

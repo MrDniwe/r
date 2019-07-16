@@ -63,23 +63,17 @@ func main() {
 	connStr := fmt.Sprintf("user=%v dbname=%v sslmode=disable port=%v password=%v host=%v", v.GetString("pgUser"), v.GetString("pgDbname"), v.GetString("pgPort"), v.GetString("pgPassword"), v.GetString("pgHost"))
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		l.Print("Ошибка при открытии соединения с Postgres")
 		l.Fatal(err)
-		os.Exit(1)
 	}
 	// создаем репозиторий с имеющимся подключением
 	articleRepo, err := articleRepository.NewRepository(db, l)
 	if err != nil {
-		l.Print("Ошибка при работе с репозиторием данных")
 		l.Fatal(err)
-		os.Exit(1)
 	}
 	// создаем юзкейс с только что созданным репозиторием
 	articleUc, err := articleUsecase.NewUsecase(articleRepo, l, v)
 	if err != nil {
-		l.Print("Ошибка при работе с контролером данных")
 		l.Fatal(err)
-		os.Exit(1)
 	}
 
 	// --------

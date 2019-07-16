@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
-	"github.com/mrdniwe/r/pkg/errors"
+	e "github.com/mrdniwe/r/pkg/errors"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"html/template"
 )
@@ -28,13 +29,16 @@ func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 	if err := row.Scan(&articleNull.Id, &articleNull.Header, &articleNull.Lead, &articleNull.Text, &articleNull.Date, &articleNull.Views, &articleNull.Photo); err != nil {
 		switch {
 		case err == sql.ErrNoRows:
-			return nil, errors.NotFoundErr
+			return nil, e.NotFoundErr
 		default:
-			a.L.WithFields(logrus.Fields{
-				"type": "Postgres error",
-				"in":   "Scan",
-			}).Error(err)
-			return nil, errors.ServerErr
+			nerr := errors.Wrap(err, "Cannot scan row")
+			if err, ok := nerr.(e.StackTracer); ok {
+				a.L.WithFields(logrus.Fields{
+					"type":  e.PostgresError,
+					"stack": err.StackTrace()[0],
+				}).Error(err)
+			}
+			return nil, e.ServerErr
 		}
 		//TODO писать стектрейс, унифицировать типы ошибок
 	}

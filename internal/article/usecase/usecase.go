@@ -3,7 +3,7 @@ package usecase
 import (
 	"github.com/mrdniwe/r/internal/article/repository"
 	"github.com/mrdniwe/r/internal/models"
-	"github.com/mrdniwe/r/pkg/errors"
+	e "github.com/mrdniwe/r/pkg/errors"
 	uuid "github.com/nu7hatch/gouuid"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -29,11 +29,11 @@ func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 	uu, err := uuid.ParseHex(id)
 	if err != nil {
 		u.L.WithFields(logrus.Fields{
-			"type":  "Bad request",
+			"type":  e.ValidationError,
 			"in":    "UUID",
 			"given": id,
 		}).Info(err)
-		return nil, errors.BadRequestErr
+		return nil, e.BadRequestErr
 	}
 	a, err := u.Repo.GetById(uu.String())
 	if err != nil {

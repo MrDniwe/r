@@ -29,3 +29,9 @@ func (ad *ArticleDelivery) ErrHandler() http.HandlerFunc {
 		}
 	}
 }
+
+// метод для замены дефолтной страницы 404
+func (ad *ArticleDelivery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	site := models.Site{"Страница не найдена", "Страница не найдена"}
+	ad.T.Items["notfound"].Execute(w, site)
+}

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
-	"github.com/mrdniwe/r/pkg/errors"
-	ers "github.com/pkg/errors"
+	e "github.com/mrdniwe/r/pkg/errors"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -36,7 +36,7 @@ func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
 func (a *ArcticleRepo) GetLastNArticles(n int) ([]*models.Article, error) {
 	query := `
 	  select
-	    uuid, title,, lead, body, active_from, views, image
+	    uuid, title, lead, body, active_from, views, image
 	  from articles
 	    where
 	      is_visible=true
@@ -45,16 +45,15 @@ func (a *ArcticleRepo) GetLastNArticles(n int) ([]*models.Article, error) {
 	`
 	rows, err := a.db.Query(query, n)
 	if err != nil {
-		nerr := ers.Wrap(err, "Cannot get last N articles")
-		if err, ok := nerr.(errors.StackTracer); ok {
+		nerr := errors.Wrap(err, "Cannot get last N articles")
+		if err, ok := nerr.(e.StackTracer); ok {
 			st := err.StackTrace()
 			a.L.WithFields(logrus.Fields{
 				"stack": fmt.Sprintf("%+v", st[0]),
-				"type":  errors.ServerError,
+				"type":  e.PostgresError,
 			}).Error(err)
 		}
-		//TODO обернуть в какую-то функцию
-		return nil, errors.ServerErr
+		return nil, e.ServerErr
 	}
 	defer rows.Close()
 	articles := make([]*models.Article, n)

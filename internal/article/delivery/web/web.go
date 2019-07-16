@@ -20,6 +20,7 @@ type ArticleDelivery struct {
 func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 	view := view.New()
 	ad := &ArticleDelivery{uc, l, view}
+	r.NotFoundHandler = ad
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")
