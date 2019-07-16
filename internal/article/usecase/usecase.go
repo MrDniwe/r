@@ -11,7 +11,7 @@ import (
 
 type ArticleUsecase interface {
 	SingleArticle(id string) (*models.Article, error)
-	LastArticles(amount int) ([]*models.Article, error)
+	LastArticles(amount, offset int) ([]*models.Article, error)
 }
 
 type ArticleUC struct {
@@ -45,8 +45,8 @@ func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 	return a, nil
 }
 
-func (u *ArticleUC) LastArticles(amount int) ([]*models.Article, error) {
-	al, err := u.Repo.GetLastNArticles(amount)
+func (u *ArticleUC) LastArticles(amount, offset int) ([]*models.Article, error) {
+	al, err := u.Repo.GetLastList(amount, 0)
 	if err != nil {
 		return nil, err
 	}

@@ -33,19 +33,23 @@ func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
 	return art, nil
 }
 
-func (a *ArcticleRepo) GetLastNArticles(n int) ([]*models.Article, error) {
+func (a *ArcticleRepo) GetLastList(limit, offset int) ([]*models.Article, error) {
+	if limit > 100 {
+		limit = 100
+	}
 	query := `
-	  select
-	    uuid, title, lead, body, active_from, views, image
-	  from articles
-	    where
-	      is_visible=true
-	    order by active_from desc
-	    limit $1
+		select
+			uuid, title, lead, body, active_from, views, image
+		from articles
+		where
+			is_visible = true
+		order by active_from desc
+		limit $1
+		offset $2
 	`
-	rows, err := a.db.Query(query, n)
+	rows, err := a.db.Query(query, limit, offset)
 	if err != nil {
-		nerr := errors.Wrap(err, "Cannot get last N articles")
+		nerr := errors.Wrap(err, "Cannot get articles with limit and offset")
 		if err, ok := nerr.(e.StackTracer); ok {
 			st := err.StackTrace()
 			a.L.WithFields(logrus.Fields{
