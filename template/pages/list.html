@@ -6,10 +6,10 @@
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="clearfix" style="margin-top: 97px;">
           {{ if .HasPrev }}
-          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr;</a>
+          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr; Позже</a>
           {{ end }}
           {{ if .HasNext }}
-          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">&rarr;</a>
+          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">Раньше &rarr;</a>
           {{end}}
         </div>
         {{ range .Rest }}
@@ -25,10 +25,10 @@
         <!-- Pager -->
         <div class="clearfix">
           {{ if .HasPrev }}
-          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr;</a>
+          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr; Позже</a>
           {{ end }}
           {{ if .HasNext }}
-          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">&rarr;</a>
+          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">Раньше &rarr;</a>
           {{end}}
         </div>
       </div>

@@ -28,12 +28,19 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router, v *
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")
 	r.HandleFunc("/list/{page}", ad.List()).Methods("GET")
+	r.HandleFunc("/favicon.ico", ad.Favicon()).Methods("GET")
 	// errors
 	errh := r.PathPrefix("/errors/").Subrouter()
 	errh.HandleFunc("/{errtype}", ad.ErrHandler())
 	// Static
 	static := http.FileServer(http.Dir("template/static"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", static))
+}
+
+func (ad *ArticleDelivery) Favicon() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "template/static/favicon.ico")
+	}
 }
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
