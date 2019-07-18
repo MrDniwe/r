@@ -39,7 +39,7 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router, v *
 
 func (ad *ArticleDelivery) Favicon() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "template/static/favicon.ico")
+		http.ServeFile(w, r, "template/static/img/favicon.ico")
 	}
 }
 
