@@ -12,6 +12,7 @@ import (
 type ArticleUsecase interface {
 	SingleArticle(id string) (*models.Article, error)
 	LastArticles(amount, offset int) ([]*models.Article, error)
+	TotalPagesCount() (int, error)
 }
 
 type ArticleUC struct {
@@ -56,4 +57,12 @@ func (u *ArticleUC) LastArticles(amount, offset int) ([]*models.Article, error) 
 		}
 	}
 	return al, nil
+}
+
+func (u *ArticleUC) TotalPagesCount() (int, error) {
+	total, err := u.Repo.PagesCount(u.V.GetInt("pageAmount"))
+	if err != nil {
+		return 0, err
+	}
+	return total, nil
 }

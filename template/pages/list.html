@@ -5,8 +5,12 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="clearfix" style="margin-top: 97px;">
-          <a class="btn btn-primary float-left" href="/list/1">&larr;</a>
-          <a class="btn btn-primary float-right" href="/list/2">&rarr;</a>
+          {{ if .HasPrev }}
+          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr;</a>
+          {{ end }}
+          {{ if .HasNext }}
+          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">&rarr;</a>
+          {{end}}
         </div>
         {{ range .Rest }}
         <div class="post-preview">
@@ -20,8 +24,12 @@
         {{ end }}
         <!-- Pager -->
         <div class="clearfix">
-          <a class="btn btn-primary float-left" href="/list/1">&larr;</a>
-          <a class="btn btn-primary float-right" href="/list/2">&rarr;</a>
+          {{ if .HasPrev }}
+          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr;</a>
+          {{ end }}
+          {{ if .HasNext }}
+          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">&rarr;</a>
+          {{end}}
         </div>
       </div>
     </div>

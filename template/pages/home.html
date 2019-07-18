@@ -14,11 +14,13 @@
       <hr />
       {{ end }}
       <!-- Pager -->
+      {{ if .HasNext }}
       <div class="clearfix">
-        <a class="btn btn-primary float-right" href="/list/2"
+        <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}"
           >Смотреть более ранние &rarr;</a
         >
       </div>
+      {{ end }}
     </div>
   </div>
 </div>

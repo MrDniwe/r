@@ -31,7 +31,7 @@ func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 		case err == sql.ErrNoRows:
 			return nil, e.NotFoundErr
 		default:
-			nerr := errors.Wrap(err, "Cannot scan row")
+			nerr := errors.Wrap(err, "Cannot scan row while scanning articles")
 			if err, ok := nerr.(e.StackTracer); ok {
 				a.L.WithFields(logrus.Fields{
 					"type":  e.PostgresError,
@@ -40,7 +40,6 @@ func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 			}
 			return nil, e.ServerErr
 		}
-		//TODO писать стектрейс, унифицировать типы ошибок
 	}
 	article := &models.Article{
 		Id:      articleNull.Id,

@@ -24,4 +24,22 @@ type Article struct {
 type ListPage struct {
 	Rest []*Article
 	Article
+	TotalPages  int
+	CurrentPage int
+}
+
+func (lp *ListPage) NextPage() int {
+	return lp.CurrentPage + 1
+}
+
+func (lp *ListPage) PrevPage() int {
+	return lp.CurrentPage - 1
+}
+
+func (lp *ListPage) HasPrev() bool {
+	return lp.CurrentPage > 1
+}
+
+func (lp *ListPage) HasNext() bool {
+	return lp.CurrentPage < lp.TotalPages
 }

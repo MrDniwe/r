@@ -44,9 +44,16 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 			return
 		}
 		topArticle := *articles[0]
-		mp := models.ListPage{
+		total, err := ad.Usecase.TotalPagesCount()
+		if err != nil {
+			e.HandleError(err, w, r)
+			return
+		}
+		mp := &models.ListPage{
 			articles[1:],
 			topArticle,
+			total,
+			1,
 		}
 		ad.T.Items["mainpage"].Execute(w, mp)
 	}
@@ -84,18 +91,29 @@ func (ad *ArticleDelivery) List() http.HandlerFunc {
 			e.HandleError(e.BadRequestErr, w, r)
 			return
 		}
+		total, err := ad.Usecase.TotalPagesCount()
+		if err != nil {
+			e.HandleError(err, w, r)
+			return
+		}
+		if pNum > total {
+			e.HandleError(e.NotFoundErr, w, r)
+			return
+		}
 		offset := pAmount * (pNum - 1)
 		articles, err := ad.Usecase.LastArticles(pAmount, offset)
 		if err != nil {
 			e.HandleError(err, w, r)
 			return
 		}
-		lp := models.ListPage{
+		lp := &models.ListPage{
 			articles,
 			models.Article{
 				Header: "Список статей, страница " + vars["page"],
 				Lead:   "Список статей, страница " + vars["page"],
 			},
+			total,
+			pNum,
 		}
 		ad.T.Items["list"].Execute(w, lp)
 	}
