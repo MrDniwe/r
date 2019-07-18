@@ -46,7 +46,7 @@ func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 }
 
 func (u *ArticleUC) LastArticles(amount, offset int) ([]*models.Article, error) {
-	al, err := u.Repo.GetLastList(amount, 0)
+	al, err := u.Repo.GetLastList(amount, offset)
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ type Article struct {
 	Views   int
 }
 
-type MainPage struct {
+type ListPage struct {
 	Rest []*Article
 	Article
 }
