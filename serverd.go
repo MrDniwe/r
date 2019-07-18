@@ -46,12 +46,14 @@ func main() {
 	v.SetDefault("pgPassword", "development")
 	v.SetDefault("pgDbname", "development")
 	v.SetDefault("s3URIPrefix", "https://r57.s3.eu-central-1.amazonaws.com")
+	v.SetDefault("pageAmount", 10)
 	v.BindEnv("pgHost", "PG_HOST")
 	v.BindEnv("pgPort", "PG_PORT")
 	v.BindEnv("pgUser", "PG_USER")
 	v.BindEnv("pgPassword", "PG_PASSWORD")
 	v.BindEnv("pgDbname", "PG_DATABASE")
 	v.BindEnv("s3URIPrefix", "S3_URI_PREFIX")
+	v.BindEnv("pageAmount", "SITE_PAGE_AMOUNT")
 
 	// слушаем события ОС в канал
 	osChan := make(chan os.Signal)
@@ -82,7 +84,7 @@ func main() {
 	//
 	// создаем доставку для http
 	webRouter := r.PathPrefix("/").Subrouter()
-	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter)
+	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter, v)
 	// доставка для пробрасываемых файлов
 	filesRouter := r.PathPrefix("/cfs").Subrouter()
 	filesDelivery.NewDelivery(l, filesRouter, v)

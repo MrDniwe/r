@@ -8,6 +8,7 @@ import (
 	"github.com/mrdniwe/r/pkg/errors"
 	"github.com/mrdniwe/r/pkg/templator"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"net/http"
 )
 
@@ -15,11 +16,12 @@ type ArticleDelivery struct {
 	Usecase usecase.ArticleUsecase
 	L       *logrus.Logger
 	T       *templator.Pages
+	V       *viper.Viper
 }
 
-func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
+func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router, v *viper.Viper) {
 	view := view.New()
-	ad := &ArticleDelivery{uc, l, view}
+	ad := &ArticleDelivery{uc, l, view, v}
 	r.NotFoundHandler = ad
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
@@ -34,7 +36,7 @@ func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router) {
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		articles, err := ad.Usecase.LastArticles(11)
+		articles, err := ad.Usecase.LastArticles(ad.V.GetInt("pageAmount"), 0)
 		if err != nil {
 			errors.HandleError(err, w, r)
 			return
