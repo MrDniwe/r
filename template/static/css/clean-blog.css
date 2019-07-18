@@ -456,5 +456,28 @@ footer .copyright {
   display: block;
   width: 100%;
   height: 57px;
-  background-color: #dcdcdc;
+  background-color: #4a4a4a;
+}
+
+#mainNav .navbar-brand img {
+  width: 60px;
+  height: auto;
+  content: url('/static/img/logo2.svg');
+  display: block;
+  position: absolute;
+  top: 8px;
+}
+
+#mainNav .navbar-brand span {
+  display: block;
+  margin-left: 77px;
+}
+
+@media only screen and (min-width: 768px) {
+  #mainNav .navbar-brand img {
+    content: url('/static/img/logo3.svg');
+  }
+  #mainNav.is-fixed .navbar-brand img {
+    content: url('/static/img/logo2.svg');
+  }
 }
