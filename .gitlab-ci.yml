@@ -51,6 +51,6 @@ restart_release:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - sshpass -V
     - export SSHPASS=$PROD_PASS
-    - sshpass -e ssh $PROD_LOGIN@18.185.14.98'/var/server/deploy.sh' $APP_FOLDER $REGISTRY_LOGIN $REGISTRY_PASSWORD $APP_RELEASE_IMAGE
+    - sshpass -e ssh $PROD_LOGIN@18.185.14.98 '/var/server/deploy.sh' $APP_FOLDER $REGISTRY_LOGIN $REGISTRY_PASSWORD $APP_RELEASE_IMAGE
   only:
     - master
