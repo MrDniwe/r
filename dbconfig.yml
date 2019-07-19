@@ -8,3 +8,8 @@ staging:
   datasource: dbname=staging sslmode=disable user=staging password=staging host=db port=5432
   dir: migrations
   table: migrations
+production:
+  dialect: postgres
+  datasource: dbname=prod sslmode=disable user=prod password=prod host=db port=5432
+  dir: migrations
+  table: migrations
