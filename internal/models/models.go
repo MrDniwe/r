@@ -5,41 +5,77 @@ import (
 	"time"
 )
 
-type Site struct {
-	Header string
-	Lead   string
+type Page struct {
+	Title       string
+	Description string
 }
 
-type Article struct {
-	Id      string
-	Visible bool
-	Header  string
-	Lead    string
-	Text    template.HTML
-	Date    time.Time
-	Photo   string
-	Views   int
-}
-
-type ListPage struct {
-	Rest []*Article
-	Article
+type ArticleList struct {
+	Articles    []*Article
 	TotalPages  int
 	CurrentPage int
 }
 
-func (lp *ListPage) NextPage() int {
+type Article struct {
+	Id       string
+	Visible  bool
+	Header   string
+	Lead     string
+	Text     template.HTML
+	Date     time.Time
+	Photo    string
+	Views    int
+	Comments []Comment
+}
+
+type Comment struct {
+	Id     string
+	UserId string
+	Text   string
+	Date   time.Time
+	User   User
+}
+
+type User struct {
+	Id    string
+	Login string
+	Email string
+}
+
+type ListPage struct {
+	Page Page
+	List ArticleList
+}
+
+type HomePage struct {
+	Page    Page
+	Article Article
+	Rest    ArticleList
+}
+
+type ArticlePage struct {
+	Page    Page
+	Article Article
+}
+
+type ErrorPage struct {
+	Page             Page
+	ErrorTitle       string
+	ErrorDescription string
+}
+
+func (lp *ArticleList) NextPage() int {
 	return lp.CurrentPage + 1
 }
 
-func (lp *ListPage) PrevPage() int {
+func (lp *ArticleList) PrevPage() int {
 	return lp.CurrentPage - 1
 }
 
-func (lp *ListPage) HasPrev() bool {
+func (lp *ArticleList) HasPrev() bool {
 	return lp.CurrentPage > 1
 }
 
-func (lp *ListPage) HasNext() bool {
+func (lp *ArticleList) HasNext() bool {
 	return lp.CurrentPage < lp.TotalPages
 }

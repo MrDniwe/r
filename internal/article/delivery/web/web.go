@@ -56,12 +56,13 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		mp := &models.ListPage{
+		restArticles := models.ArticleList{
 			articles[1:],
-			topArticle,
 			total,
 			1,
 		}
+		page := models.Page{topArticle.Header, topArticle.Lead}
+		mp := &models.HomePage{page, topArticle, restArticles}
 		ad.T.Items["mainpage"].Execute(w, mp)
 	}
 }

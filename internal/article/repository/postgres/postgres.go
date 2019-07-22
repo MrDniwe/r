@@ -60,7 +60,7 @@ func (a *ArcticleRepo) GetLastList(limit, offset int) ([]*models.Article, error)
 		return nil, e.ServerErr
 	}
 	defer rows.Close()
-	articles := make([]*models.Article, 0)
+	articles := make([]*models.Article, 0, limit)
 	for rows.Next() {
 		art, err := a.scanArticle(rows)
 		if err != nil {
