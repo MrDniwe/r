@@ -38,6 +38,10 @@ type Comment struct {
 
 type Comments []Comment
 
+func (c Comments) Presents() bool {
+	return len(c) > 0
+}
+
 type User struct {
 	Id    string `json:"uuid"`
 	Login string `json:"login"`

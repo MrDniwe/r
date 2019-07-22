@@ -10,6 +10,7 @@ func New() *templator.Pages {
 		"template/layout/page-header.html",
 		"template/layout/page-footer.html",
 		"template/layout/navbar-placeholder.html",
+		"template/layout/comments.html",
 		"template/layout/layout.html"}
 
 	p.New(root)

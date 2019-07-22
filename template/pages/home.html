@@ -3,7 +3,13 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-md-10 mx-auto">
-      {{ range .Rest.Articles }}
+      {{ if .Rest.HasNext }}
+      <div class="clearfix">
+        <a class="btn btn-primary float-right" href="/list/{{ .Rest.NextPage }}"
+          >Раньше &rarr;</a
+        >
+      </div>
+      {{ end }} {{ range .Rest.Articles }}
       <div class="post-preview">
         <a href="/post/{{ .Id }}">
           <h2 class="post-title">{{ .Header }}</h2>
