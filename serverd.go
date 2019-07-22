@@ -82,12 +82,12 @@ func main() {
 	// Роуты
 	// --------
 	//
-	// создаем доставку для http
-	webRouter := r.PathPrefix("/").Subrouter()
-	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter, v)
 	// доставка для пробрасываемых файлов
 	filesRouter := r.PathPrefix("/cfs").Subrouter()
 	filesDelivery.NewDelivery(l, filesRouter, v)
+	// создаем доставку для http
+	webRouter := r.PathPrefix("/").Subrouter()
+	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter, v)
 
 	// Handle and serve
 	http.Handle("/", r)

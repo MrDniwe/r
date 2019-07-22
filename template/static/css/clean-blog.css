@@ -485,3 +485,18 @@ footer .copyright {
     visibility: visible;
   }
 }
+
+.comments ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.comments ul li {
+  margin-bottom: 20px;
+  padding: 30px;
+  background-color: #fbfbfb;
+  font-size: 17px;
+}
+.comments ul li .comment-signature {
+  color: #b12f2f;
+}

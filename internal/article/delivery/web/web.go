@@ -47,21 +47,24 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		articles, err := ad.Usecase.LastArticles(ad.V.GetInt("pageAmount"), 0)
 		if err != nil {
+			ad.L.Info("err in last")
 			e.HandleError(err, w, r)
 			return
 		}
-		topArticle := *articles[0]
+		topArticle := articles[0]
 		total, err := ad.Usecase.TotalPagesCount()
 		if err != nil {
+			ad.L.Info("err in countpage")
 			e.HandleError(err, w, r)
 			return
 		}
-		mp := &models.ListPage{
+		restArticles := models.ArticleList{
 			articles[1:],
-			topArticle,
 			total,
 			1,
 		}
+		page := models.Page{topArticle.Header, topArticle.Lead}
+		mp := &models.HomePage{page, topArticle, restArticles}
 		ad.T.Items["mainpage"].Execute(w, mp)
 	}
 }
@@ -74,7 +77,15 @@ func (ad *ArticleDelivery) Post() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		ad.T.Items["post"].Execute(w, a)
+		page := models.Page{
+			a.Header,
+			a.Lead,
+		}
+		pp := models.ArticlePage{
+			page,
+			a,
+		}
+		ad.T.Items["post"].Execute(w, pp)
 	}
 }
 
@@ -113,14 +124,18 @@ func (ad *ArticleDelivery) List() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		lp := &models.ListPage{
+		page := models.Page{
+			"Список статей, страница " + vars["page"],
+			"Список статей, страница " + vars["page"],
+		}
+		list := models.ArticleList{
 			articles,
-			models.Article{
-				Header: "Список статей, страница " + vars["page"],
-				Lead:   "Список статей, страница " + vars["page"],
-			},
 			total,
 			pNum,
+		}
+		lp := &models.ListPage{
+			page,
+			list,
 		}
 		ad.T.Items["list"].Execute(w, lp)
 	}

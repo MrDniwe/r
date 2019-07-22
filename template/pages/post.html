@@ -3,7 +3,12 @@
 <article>
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">{{.Text}}</div>
+      <div class="col-lg-8 col-md-10 mx-auto">{{.Article.Text}}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {{template "comments.html" .Article.Comments}}
+      </div>
     </div>
   </div>
 </article>

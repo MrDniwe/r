@@ -5,14 +5,14 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="clearfix" style="margin-top: 97px;">
-          {{ if .HasPrev }}
-          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr; Позже</a>
+          {{ if .List.HasPrev }}
+          <a class="btn btn-primary float-left" href="/list/{{ .List.PrevPage }}">&larr; Позже</a>
           {{ end }}
-          {{ if .HasNext }}
-          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">Раньше &rarr;</a>
+          {{ if .List.HasNext }}
+          <a class="btn btn-primary float-right" href="/list/{{ .List.NextPage }}">Раньше &rarr;</a>
           {{end}}
         </div>
-        {{ range .Rest }}
+        {{ range .List.Articles }}
         <div class="post-preview">
           <a href="/post/{{ .Id }}">
             <h2 class="post-title">{{ .Header }}</h2>
@@ -24,11 +24,11 @@
         {{ end }}
         <!-- Pager -->
         <div class="clearfix">
-          {{ if .HasPrev }}
-          <a class="btn btn-primary float-left" href="/list/{{ .PrevPage }}">&larr; Позже</a>
+          {{ if .List.HasPrev }}
+          <a class="btn btn-primary float-left" href="/list/{{ .List.PrevPage }}">&larr; Позже</a>
           {{ end }}
-          {{ if .HasNext }}
-          <a class="btn btn-primary float-right" href="/list/{{ .NextPage }}">Раньше &rarr;</a>
+          {{ if .List.HasNext }}
+          <a class="btn btn-primary float-right" href="/list/{{ .List.NextPage }}">Раньше &rarr;</a>
           {{end}}
         </div>
       </div>
