@@ -12,12 +12,13 @@ func (ad *ArticleDelivery) ErrHandler() http.HandlerFunc {
 		errtype := vars["errtype"]
 		switch errtype {
 		case "badrequest":
-			page := models.ErrorPage{
-				models.Page{"Heкорректные параметры запроса", "Heкорректные параметры запроса"},
+			page := models.Page{"Heкорректные параметры запроса", "Heкорректные параметры запроса"}
+			o := models.ErrorPage{
+				page,
 				"Ошибка 400",
 				"Некорректные параметры запроса",
 			}
-			ad.T.Items["error"].Execute(w, page)
+			ad.T.Items["error"].Execute(w, o)
 		case "notfound":
 			page := models.ErrorPage{
 				models.Page{"Страница не найдена", "Страница не найдена"},

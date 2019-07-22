@@ -50,7 +50,7 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		topArticle := *articles[0]
+		topArticle := articles[0]
 		total, err := ad.Usecase.TotalPagesCount()
 		if err != nil {
 			e.HandleError(err, w, r)
@@ -75,7 +75,15 @@ func (ad *ArticleDelivery) Post() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		ad.T.Items["post"].Execute(w, a)
+		page := models.Page{
+			a.Header,
+			a.Lead,
+		}
+		pp := models.ArticlePage{
+			page,
+			a,
+		}
+		ad.T.Items["post"].Execute(w, pp)
 	}
 }
 
@@ -114,14 +122,18 @@ func (ad *ArticleDelivery) List() http.HandlerFunc {
 			e.HandleError(err, w, r)
 			return
 		}
-		lp := &models.ListPage{
+		page := models.Page{
+			"Список статей, страница " + vars["page"],
+			"Список статей, страница " + vars["page"],
+		}
+		list := models.ArticleList{
 			articles,
-			models.Article{
-				Header: "Список статей, страница " + vars["page"],
-				Lead:   "Список статей, страница " + vars["page"],
-			},
 			total,
 			pNum,
+		}
+		lp := &models.ListPage{
+			page,
+			list,
 		}
 		ad.T.Items["list"].Execute(w, lp)
 	}

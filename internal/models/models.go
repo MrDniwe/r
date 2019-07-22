@@ -49,13 +49,13 @@ type ListPage struct {
 
 type HomePage struct {
 	Page    Page
-	Article Article
+	Article *Article
 	Rest    ArticleList
 }
 
 type ArticlePage struct {
 	Page    Page
-	Article Article
+	Article *Article
 }
 
 type ErrorPage struct {

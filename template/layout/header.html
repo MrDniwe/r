@@ -4,8 +4,8 @@
     name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no"
   />
-  {{ if .Lead }}
-  <meta name="description" content="{{ .Lead }}" />
+  {{ if .Page.Description }}
+  <meta name="description" content="{{ .Page.Description }}" />
   {{ else }}
   <meta
     name="description"
@@ -17,8 +17,8 @@
     content="Информационное агентство Регион 57, город Орёл"
   />
 
-  {{ if .Header }}
-  <title>Регион 57 &ndash; {{ .Header }}</title>
+  {{ if .Page.Title }}
+  <title>Регион 57 &ndash; {{ .Page.Title }}</title>
   {{ else }}
   <title>Регион 57</title>
   {{ end }}

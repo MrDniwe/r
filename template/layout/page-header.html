@@ -1,6 +1,6 @@
 <!-- Page Header -->
-{{ if .Photo }}
-<header class="masthead" style="background-image: url('{{ .Photo }}')">
+{{ if .Article.Photo }}
+<header class="masthead" style="background-image: url('{{ .Article.Photo }}')">
   {{ else }}
   <header
     class="masthead"
@@ -12,11 +12,11 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto" style="overflow:hidden;">
           <div class="site-heading">
-            <a href="/post/{{ .Id }}">
-              <h1>{{.Header}}</h1>
-              <span class="subheading">{{.Lead}}</span>
+            <a href="/post/{{ .Article.Id }}">
+              <h1>{{.Article.Header}}</h1>
+              <span class="subheading">{{.Article.Lead}}</span>
             </a>
-            <span class="heading-date">{{ .Date.Local.Format "02.01.2006" }}</p>
+            <span class="heading-date">{{ .Article.Date.Local.Format "02.01.2006" }}</p>
           </div>
         </div>
       </div>
