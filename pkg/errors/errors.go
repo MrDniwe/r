@@ -9,6 +9,7 @@ import (
 const (
 	PostgresError   string = "Postgres request error"
 	ValidationError string = "Validation error"
+	UnmarshalError  string = "JSON unmarshalling failed"
 )
 
 var (

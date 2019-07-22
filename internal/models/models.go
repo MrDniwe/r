@@ -25,21 +25,23 @@ type Article struct {
 	Date     time.Time
 	Photo    string
 	Views    int
-	Comments []Comment
+	Comments Comments
 }
 
 type Comment struct {
-	Id     string
-	UserId string
-	Text   string
-	Date   time.Time
+	Id     string    `json:"uuid"`
+	UserId string    `json:"user_uuid"`
+	Text   string    `json:"message"`
+	Date   time.Time `json:"created_at"`
 	User   User
 }
 
+type Comments []Comment
+
 type User struct {
-	Id    string
-	Login string
-	Email string
+	Id    string `json:"uuid"`
+	Login string `json:"login"`
+	Email string `json:"email"`
 }
 
 type ListPage struct {

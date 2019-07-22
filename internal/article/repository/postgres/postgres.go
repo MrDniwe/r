@@ -20,8 +20,29 @@ type ArcticleRepo struct {
 }
 
 func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
-	query := `select 
-	  uuid, title, lead, body, active_from, views, image
+	query := `
+	select 
+		uuid, title, lead, body, active_from, views, image,
+		(
+			select 
+				coalesce(array_to_json(array_agg(com)),'[]') 
+			from (
+				select 
+					uuid, user_uuid, message, created_at,
+					(select row_to_json(u) from
+						( select 
+							uuid, login, email
+						from users
+						where uuid = c.user_uuid ) u
+					) as user
+				from comments c
+				where
+					article_uuid=$1
+					and is_visible = true
+				order by
+					created_at
+			) as com
+		) as comments
 	from articles
 	  where is_visible=true
 	  and uuid=$1`
@@ -39,7 +60,7 @@ func (a *ArcticleRepo) GetLastList(limit, offset int) ([]*models.Article, error)
 	}
 	query := `
 		select
-			uuid, title, lead, body, active_from, views, image
+			uuid, title, lead, body, active_from, views, image, '[]' as comments
 		from articles
 		where
 			is_visible = true

@@ -47,12 +47,14 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		articles, err := ad.Usecase.LastArticles(ad.V.GetInt("pageAmount"), 0)
 		if err != nil {
+			ad.L.Info("err in last")
 			e.HandleError(err, w, r)
 			return
 		}
 		topArticle := articles[0]
 		total, err := ad.Usecase.TotalPagesCount()
 		if err != nil {
+			ad.L.Info("err in countpage")
 			e.HandleError(err, w, r)
 			return
 		}
