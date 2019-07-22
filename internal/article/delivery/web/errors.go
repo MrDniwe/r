@@ -12,26 +12,51 @@ func (ad *ArticleDelivery) ErrHandler() http.HandlerFunc {
 		errtype := vars["errtype"]
 		switch errtype {
 		case "badrequest":
-			site := models.Site{"Heкорректные параметры запроса", "Heкорректные параметры запроса"}
-			ad.T.Items["badrequest"].Execute(w, site)
+			page := models.Page{"Heкорректные параметры запроса", "Heкорректные параметры запроса"}
+			o := models.ErrorPage{
+				page,
+				"Ошибка 400",
+				"Некорректные параметры запроса",
+			}
+			ad.T.Items["error"].Execute(w, o)
 		case "notfound":
-			site := models.Site{"Страница не найдена", "Страница не найдена"}
-			ad.T.Items["notfound"].Execute(w, site)
+			page := models.ErrorPage{
+				models.Page{"Страница не найдена", "Страница не найдена"},
+				"Ошибка 404",
+				"Ничего не найдено",
+			}
+			ad.T.Items["error"].Execute(w, page)
 		case "server":
-			site := models.Site{"Ошибка сервера", "Проблемы на стороне сервера"}
-			ad.T.Items["server"].Execute(w, site)
+			page := models.ErrorPage{
+				models.Page{"Ошибка сервера", "Проблемы на стороне сервера"},
+				"Ошибка 500",
+				"Проблемы на стороне сервера",
+			}
+			ad.T.Items["error"].Execute(w, page)
 		case "forbidden":
-			site := models.Site{"Доступ запрещен", "Доступ на данную страницу для вас запрещен"}
-			ad.T.Items["forbidden"].Execute(w, site)
+			page := models.ErrorPage{
+				models.Page{"Доступ запрещен", "Доступ на данную страницу для вас запрещен"},
+				"Ошибка 403",
+				"Доступ на данную страницу вам запрещён",
+			}
+			ad.T.Items["error"].Execute(w, page)
 		default:
-			site := models.Site{"Неизвестная ошибка", "Неизвестная ошибка"}
-			ad.T.Items["unknown"].Execute(w, site)
+			page := models.ErrorPage{
+				models.Page{"Неизвестная ошибка", "Неизвестная ошибка"},
+				"Ошибка",
+				"Неизвестная ошибка",
+			}
+			ad.T.Items["error"].Execute(w, page)
 		}
 	}
 }
 
 // метод для замены дефолтной страницы 404
 func (ad *ArticleDelivery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	site := models.Site{"Страница не найдена", "Страница не найдена"}
-	ad.T.Items["notfound"].Execute(w, site)
+	page := models.ErrorPage{
+		models.Page{"Страница не найдена", "Страница не найдена"},
+		"Ошибка 404",
+		"Ничего не найдено",
+	}
+	ad.T.Items["error"].Execute(w, page)
 }

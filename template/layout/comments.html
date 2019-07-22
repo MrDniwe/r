@@ -1,0 +1,18 @@
+<div class="comments">
+  <hr />
+  {{ if .Presents }}
+  <h4>Комментарии пользователей</h4>
+  <ul>
+    {{ range . }}
+    <li>
+      <span class="comment-text"> {{.Text}} </span>
+      <sub class="comment-signature">
+        &mdash; <b>{{ .User.Login }}</b>, {{ .Date.Local.Format "02.01.2006 15:03"}}
+      </sub>
+    </li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <h4>Пока нет комментариев</h4>
+  {{ end }}
+</div>
