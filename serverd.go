@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	"github.com/mrdniwe/r/internal/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
@@ -26,8 +27,6 @@ var (
 )
 
 func init() {
-	// Подключение конфигурации
-	v = viper.New()
 	// Настраиваем логгер
 	l = log.New()
 	// l.SetFormatter(&log.JSONFormatter{})
@@ -40,20 +39,7 @@ func init() {
 
 func main() {
 	// определяем конфигурацию
-	v.SetDefault("pgHost", "localhost")
-	v.SetDefault("pgPort", "5434")
-	v.SetDefault("pgUser", "development")
-	v.SetDefault("pgPassword", "development")
-	v.SetDefault("pgDbname", "development")
-	v.SetDefault("s3URIPrefix", "https://r57.s3.eu-central-1.amazonaws.com")
-	v.SetDefault("pageAmount", 10)
-	v.BindEnv("pgHost", "PG_HOST")
-	v.BindEnv("pgPort", "PG_PORT")
-	v.BindEnv("pgUser", "PG_USER")
-	v.BindEnv("pgPassword", "PG_PASSWORD")
-	v.BindEnv("pgDbname", "PG_DATABASE")
-	v.BindEnv("s3URIPrefix", "S3_URI_PREFIX")
-	v.BindEnv("pageAmount", "SITE_PAGE_AMOUNT")
+	v = config.InitialConfig()
 
 	// слушаем события ОС в канал
 	osChan := make(chan os.Signal)
