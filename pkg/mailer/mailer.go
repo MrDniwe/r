@@ -1,9 +1,10 @@
 package mailer
 
 import (
-	"github.com/go-gomail/gomail"
+	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"gopkg.in/gomail.v2"
 	"html/template"
 	"strings"
 )
@@ -24,7 +25,7 @@ type recoveryMailData struct {
 }
 
 func New(v *viper.Viper, l *logrus.Logger) *Mailer {
-	d := gomail.NewDialer(v.GetString("mailServer"), v.GetInt("mailPort"), v.GetString("mailUser"), v.GetString("mailPassword"))
+	d := gomail.NewPlainDialer(v.GetString("mailServer"), v.GetInt("mailPort"), v.GetString("mailUser"), v.GetString("mailPassword"))
 	t := templateSet{}
 	t["recovery"] = template.New(`
 	<h1>Восстановление пароля</h1>
@@ -53,7 +54,10 @@ func (m *Mailer) SendRecovery(login string, email string, code string) error {
 	m.T["recovery"].Execute(&body, data)
 	msg.SetBody("text/html", body.String())
 	if err := m.D.DialAndSend(msg); err != nil {
-		return err
+		a.L.WithFields(logrus.Fields{
+			"type": e.MailError,
+		}).Error(err)
+		return e.ServerErr
 	}
 	return nil
 }

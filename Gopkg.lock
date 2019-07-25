@@ -8,12 +8,6 @@
   version = "v1.4.7"
 
 [[projects]]
-  name = "github.com/go-gomail/gomail"
-  packages = ["."]
-  revision = "41f3572897373c5538c50a2402db15db079fa4fd"
-  version = "2.0.0"
-
-[[projects]]
   name = "github.com/go-stack/stack"
   packages = ["."]
   revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
@@ -164,6 +158,12 @@
   revision = "2caba252f4dc53eaf6b553000885530023f54623"
 
 [[projects]]
+  name = "gopkg.in/gomail.v2"
+  packages = ["."]
+  revision = "41f3572897373c5538c50a2402db15db079fa4fd"
+  version = "2.0.0"
+
+[[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
@@ -172,6 +172,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "42f85966ae38aab69525ec9944ba7fbd2e8ee207cbb2bc2d10da11a8c2ebf9b0"
+  inputs-digest = "2b5aa936590525c7137b7fe5f2d999b42b38478933b4e7bcad8b84ba12dda83e"
   solver-name = "gps-cdcl"
   solver-version = 1
