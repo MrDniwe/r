@@ -10,7 +10,13 @@ func InitialConfig() *viper.Viper {
 
 	// настройки запущенного инстанса
 	v.SetDefault("host", "http://localhost:3000")
-	v.BindEnv("host", "HOST")
+	v.SetDefault("appListen", "3000")
+	v.BindEnv("host", "APP_HOST")
+	v.BindEnv("appListen", "APP_LISTEN")
+
+	//настройки логирования
+	v.SetDefault("logType", "TEXT")
+	v.BindEnv("logType", "LOG_TYPE")
 
 	// настройки БД
 	v.SetDefault("pgHost", "localhost")

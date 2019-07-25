@@ -1,67 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-
-	"database/sql"
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"github.com/mrdniwe/r/internal/config"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 
 	articleDeliveryWeb "github.com/mrdniwe/r/internal/article/delivery/web"
 	articleRepository "github.com/mrdniwe/r/internal/article/repository/postgres"
 	articleUsecase "github.com/mrdniwe/r/internal/article/usecase"
 	filesDelivery "github.com/mrdniwe/r/internal/file"
+	"github.com/mrdniwe/r/internal/server"
 )
 
 var (
-	r *mux.Router
-	l *log.Logger
-	v *viper.Viper
+	srv *server.Server
 )
 
 func init() {
-	// Настраиваем логгер
-	l = log.New()
-	// l.SetFormatter(&log.JSONFormatter{})
-	l.SetFormatter(&log.TextFormatter{})
-	l.SetOutput(os.Stdout)
-	// Template and router init
-	r = mux.NewRouter()
-
+	srv = server.NewServer()
 }
 
 func main() {
-	// определяем конфигурацию
-	v = config.InitialConfig()
 
-	// слушаем события ОС в канал
-	osChan := make(chan os.Signal)
-	signal.Notify(osChan, syscall.SIGINT, syscall.SIGTERM)
-
-	// --------
-	// подключение к БД
-	// --------
-	connStr := fmt.Sprintf("user=%v dbname=%v sslmode=disable port=%v password=%v host=%v", v.GetString("pgUser"), v.GetString("pgDbname"), v.GetString("pgPort"), v.GetString("pgPassword"), v.GetString("pgHost"))
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		l.Fatal(err)
-	}
 	// создаем репозиторий с имеющимся подключением
-	articleRepo, err := articleRepository.NewRepository(db, l)
+	articleRepo, err := articleRepository.NewRepository(srv)
 	if err != nil {
-		l.Fatal(err)
+		srv.Logger.Fatal(err)
 	}
 	// создаем юзкейс с только что созданным репозиторием
-	articleUc, err := articleUsecase.NewUsecase(articleRepo, l, v)
+	articleUc, err := articleUsecase.NewUsecase(articleRepo, srv)
 	if err != nil {
-		l.Fatal(err)
+		srv.Logger.Fatal(err)
 	}
 
 	// --------
@@ -69,23 +36,11 @@ func main() {
 	// --------
 	//
 	// доставка для пробрасываемых файлов
-	filesRouter := r.PathPrefix("/cfs").Subrouter()
-	filesDelivery.NewDelivery(l, filesRouter, v)
+	filesRouter := srv.Router.PathPrefix("/cfs").Subrouter()
+	filesDelivery.NewDelivery(filesRouter, srv)
 	// создаем доставку для http
-	webRouter := r.PathPrefix("/").Subrouter()
-	articleDeliveryWeb.NewDelivery(articleUc, l, webRouter, v)
+	webRouter := srv.Router.PathPrefix("/").Subrouter()
+	articleDeliveryWeb.NewDelivery(articleUc, webRouter, srv)
 
-	// Handle and serve
-	http.Handle("/", r)
-
-	// слушаем события выключения приложения
-	go func() {
-		sig := <-osChan
-		l.Printf("Termination signal --%v-- received", sig)
-		db.Close()
-		l.Print("Shutting down")
-		os.Exit(0)
-	}()
-	l.Print("Server is running on :3000")
-	http.ListenAndServe(":3000", nil)
+	srv.ListenAndServe()
 }

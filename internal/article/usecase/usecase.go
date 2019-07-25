@@ -3,10 +3,10 @@ package usecase
 import (
 	"github.com/mrdniwe/r/internal/article/repository"
 	"github.com/mrdniwe/r/internal/models"
+	"github.com/mrdniwe/r/internal/server"
 	e "github.com/mrdniwe/r/pkg/errors"
 	uuid "github.com/nu7hatch/gouuid"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 type ArticleUsecase interface {
@@ -17,19 +17,18 @@ type ArticleUsecase interface {
 
 type ArticleUC struct {
 	Repo repository.ArticleRepository
-	L    *logrus.Logger
-	V    *viper.Viper
+	Srv  *server.Server
 }
 
-func NewUsecase(repo repository.ArticleRepository, l *logrus.Logger, v *viper.Viper) (*ArticleUC, error) {
-	return &ArticleUC{repo, l, v}, nil
+func NewUsecase(repo repository.ArticleRepository, srv *server.Server) (*ArticleUC, error) {
+	return &ArticleUC{repo, srv}, nil
 }
 
 func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 	// валидируем uuid
 	uu, err := uuid.ParseHex(id)
 	if err != nil {
-		u.L.WithFields(logrus.Fields{
+		u.Srv.Logger.WithFields(logrus.Fields{
 			"type":  e.ValidationError,
 			"in":    "UUID",
 			"given": id,
@@ -41,7 +40,7 @@ func (u *ArticleUC) SingleArticle(id string) (*models.Article, error) {
 		return nil, err
 	}
 	if len(a.Photo) > 0 {
-		a.Photo = u.V.GetString("s3URIPrefix") + "/" + a.Photo
+		a.Photo = u.Srv.Conf.GetString("s3URIPrefix") + "/" + a.Photo
 	}
 	return a, nil
 }
@@ -53,14 +52,14 @@ func (u *ArticleUC) LastArticles(amount, offset int) ([]*models.Article, error) 
 	}
 	for _, a := range al {
 		if len(a.Photo) > 0 {
-			a.Photo = u.V.GetString("s3URIPrefix") + "/" + a.Photo
+			a.Photo = u.Srv.Conf.GetString("s3URIPrefix") + "/" + a.Photo
 		}
 	}
 	return al, nil
 }
 
 func (u *ArticleUC) TotalPagesCount() (int, error) {
-	total, err := u.Repo.PagesCount(u.V.GetInt("pageAmount"))
+	total, err := u.Repo.PagesCount(u.Srv.Conf.GetInt("pageAmount"))
 	if err != nil {
 		return 0, err
 	}

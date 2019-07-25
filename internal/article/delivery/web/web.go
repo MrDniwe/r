@@ -1,28 +1,28 @@
 package delivery
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/mrdniwe/r/internal/article/usecase"
 	"github.com/mrdniwe/r/internal/models"
+	"github.com/mrdniwe/r/internal/server"
 	"github.com/mrdniwe/r/internal/view"
 	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/mrdniwe/r/pkg/templator"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-	"net/http"
-	"strconv"
 )
 
 type ArticleDelivery struct {
 	Usecase usecase.ArticleUsecase
-	L       *logrus.Logger
 	T       *templator.Pages
-	V       *viper.Viper
+	Srv     *server.Server
 }
 
-func NewDelivery(uc usecase.ArticleUsecase, l *logrus.Logger, r *mux.Router, v *viper.Viper) {
+func NewDelivery(uc usecase.ArticleUsecase, r *mux.Router, srv *server.Server) {
 	view := view.New()
-	ad := &ArticleDelivery{uc, l, view, v}
+	ad := &ArticleDelivery{uc, view, srv}
 	r.NotFoundHandler = ad
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
@@ -45,16 +45,16 @@ func (ad *ArticleDelivery) Favicon() http.HandlerFunc {
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		articles, err := ad.Usecase.LastArticles(ad.V.GetInt("pageAmount"), 0)
+		articles, err := ad.Usecase.LastArticles(ad.Srv.Conf.GetInt("pageAmount"), 0)
 		if err != nil {
-			ad.L.Info("err in last")
+			ad.Srv.Logger.Info("err in last")
 			e.HandleError(err, w, r)
 			return
 		}
 		topArticle := articles[0]
 		total, err := ad.Usecase.TotalPagesCount()
 		if err != nil {
-			ad.L.Info("err in countpage")
+			ad.Srv.Logger.Info("err in countpage")
 			e.HandleError(err, w, r)
 			return
 		}
@@ -98,10 +98,10 @@ func (ad *ArticleDelivery) Static() http.HandlerFunc {
 func (ad *ArticleDelivery) List() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		pAmount := ad.V.GetInt("pageAmount")
+		pAmount := ad.Srv.Conf.GetInt("pageAmount")
 		pNum, err := strconv.Atoi(vars["page"])
 		if err != nil {
-			ad.L.WithFields(logrus.Fields{
+			ad.Srv.Logger.WithFields(logrus.Fields{
 				"type":  e.ValidationError,
 				"in":    "Page number",
 				"given": vars["page"],

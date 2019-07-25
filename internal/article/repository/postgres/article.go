@@ -3,12 +3,13 @@ package repository
 import (
 	"database/sql"
 	"encoding/json"
+	"html/template"
+
 	"github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
 	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"html/template"
 )
 
 type articleNullable struct {
@@ -35,7 +36,7 @@ func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 		default:
 			nerr := errors.Wrap(err, "Cannot scan row while scanning articles")
 			if err, ok := nerr.(e.StackTracer); ok {
-				a.L.WithFields(logrus.Fields{
+				a.Srv.Logger.WithFields(logrus.Fields{
 					"type":  e.PostgresError,
 					"stack": err.StackTrace()[0],
 				}).Error(err)
@@ -45,7 +46,7 @@ func (a *ArcticleRepo) scanArticle(row scanner) (*models.Article, error) {
 	}
 	comments := models.Comments{}
 	if err := json.Unmarshal([]byte(articleNull.CommentsAgg.String), &comments); err != nil {
-		a.L.WithFields(logrus.Fields{
+		a.Srv.Logger.WithFields(logrus.Fields{
 			"type":    e.UnmarshalError,
 			"details": err,
 		})

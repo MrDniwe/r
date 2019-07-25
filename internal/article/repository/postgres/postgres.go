@@ -3,20 +3,21 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	_ "github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
+	"github.com/mrdniwe/r/internal/server"
 	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
-func NewRepository(client *sql.DB, l *logrus.Logger) (*ArcticleRepo, error) {
-	return &ArcticleRepo{client, l}, nil
+func NewRepository(srv *server.Server) (*ArcticleRepo, error) {
+	return &ArcticleRepo{srv}, nil
 }
 
 type ArcticleRepo struct {
-	db *sql.DB
-	L  *logrus.Logger
+	Srv *server.Server
 }
 
 func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
@@ -46,7 +47,7 @@ func (a *ArcticleRepo) GetById(id string) (*models.Article, error) {
 	from articles
 	  where is_visible=true
 	  and uuid=$1`
-	row := a.db.QueryRow(query, id)
+	row := a.Srv.Db.QueryRow(query, id)
 	art, err := a.scanArticle(row)
 	if err != nil {
 		return nil, err
@@ -68,12 +69,12 @@ func (a *ArcticleRepo) GetLastList(limit, offset int) ([]*models.Article, error)
 		limit $1
 		offset $2
 	`
-	rows, err := a.db.Query(query, limit, offset)
+	rows, err := a.Srv.Db.Query(query, limit, offset)
 	if err != nil {
 		nerr := errors.Wrap(err, "Cannot get articles with limit and offset")
 		if err, ok := nerr.(e.StackTracer); ok {
 			st := err.StackTrace()
-			a.L.WithFields(logrus.Fields{
+			a.Srv.Logger.WithFields(logrus.Fields{
 				"stack": fmt.Sprintf("%+v", st[0]),
 				"type":  e.PostgresError,
 			}).Error(err)
@@ -97,7 +98,7 @@ func (a *ArcticleRepo) PagesCount(inPage int) (int, error) {
 		return 0, e.BadRequestErr
 	}
 	query := `select ceil( count(*)/$1 ) as total from articles where is_visible = true`
-	row := a.db.QueryRow(query, inPage)
+	row := a.Srv.Db.QueryRow(query, inPage)
 	var total int
 	if err := row.Scan(&total); err != nil {
 		switch {
@@ -106,7 +107,7 @@ func (a *ArcticleRepo) PagesCount(inPage int) (int, error) {
 		default:
 			nerr := errors.Wrap(err, "Cannot scan row while scanning total article pages")
 			if err, ok := nerr.(e.StackTracer); ok {
-				a.L.WithFields(logrus.Fields{
+				a.Srv.Logger.WithFields(logrus.Fields{
 					"type":  e.PostgresError,
 					"stack": err.StackTrace()[0],
 				}).Error(err)
