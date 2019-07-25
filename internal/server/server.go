@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mrdniwe/r/internal/config"
+	"github.com/mrdniwe/r/pkg/mailer"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -19,6 +20,7 @@ type Server struct {
 	Router *mux.Router
 	Conf   *viper.Viper
 	Db     *sql.DB
+	Mailer *mailer.Mailer
 }
 
 func NewServer() *Server {
@@ -44,7 +46,10 @@ func NewServer() *Server {
 		l.Fatal(err)
 	}
 
-	return &Server{l, r, conf, db}
+	// почтовик
+	m := mailer.New(l, conf)
+
+	return &Server{l, r, conf, db, m}
 }
 
 func (s *Server) ListenAndServe() {

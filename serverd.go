@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "github.com/lib/pq"
-
 	articleDeliveryWeb "github.com/mrdniwe/r/internal/article/delivery/web"
 	articleRepository "github.com/mrdniwe/r/internal/article/repository/postgres"
 	articleUsecase "github.com/mrdniwe/r/internal/article/usecase"

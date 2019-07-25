@@ -1,21 +1,22 @@
 package mailer
 
 import (
+	"html/template"
+	"strings"
+
 	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/gomail.v2"
-	"html/template"
-	"strings"
 )
 
 type templateSet map[string]*template.Template
 
 type Mailer struct {
-	V *viper.Viper
-	L *logrus.Logger
-	D *gomail.Dialer
-	T templateSet
+	Logger    *logrus.Logger
+	Conf      *viper.Viper
+	Dialer    *gomail.Dialer
+	Templates templateSet
 }
 
 type recoveryMailData struct {
@@ -24,8 +25,8 @@ type recoveryMailData struct {
 	code  string
 }
 
-func New(v *viper.Viper, l *logrus.Logger) *Mailer {
-	d := gomail.NewPlainDialer(v.GetString("mailServer"), v.GetInt("mailPort"), v.GetString("mailUser"), v.GetString("mailPassword"))
+func New(l *logrus.Logger, c *viper.Viper) *Mailer {
+	d := gomail.NewPlainDialer(c.GetString("mailServer"), c.GetInt("mailPort"), c.GetString("mailUser"), c.GetString("mailPassword"))
 	t := templateSet{}
 	t["recovery"] = template.New(`
 	<h1>Восстановление пароля</h1>
@@ -41,20 +42,20 @@ func New(v *viper.Viper, l *logrus.Logger) *Mailer {
 		В таком случае, переходить по ссылке не нужно.
 	</p>
 	`)
-	return &Mailer{v, l, d, t}
+	return &Mailer{l, c, d, t}
 }
 
 func (m *Mailer) SendRecovery(login string, email string, code string) error {
 	msg := gomail.NewMessage()
-	msg.SetHeader("From", m.V.GetString("mailFrom"))
+	msg.SetHeader("From", m.Conf.GetString("mailFrom"))
 	msg.SetAddressHeader("To", email, login)
 	msg.SetHeader("Subject", "Восстановление пароля")
 	var body strings.Builder
-	data := recoveryMailData{login, m.V.GetString("code"), code}
-	m.T["recovery"].Execute(&body, data)
+	data := recoveryMailData{login, m.Conf.GetString("code"), code}
+	m.Templates["recovery"].Execute(&body, data)
 	msg.SetBody("text/html", body.String())
-	if err := m.D.DialAndSend(msg); err != nil {
-		a.L.WithFields(logrus.Fields{
+	if err := m.Dialer.DialAndSend(msg); err != nil {
+		m.Logger.WithFields(logrus.Fields{
 			"type": e.MailError,
 		}).Error(err)
 		return e.ServerErr
