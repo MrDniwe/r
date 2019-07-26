@@ -12,6 +12,8 @@ const (
 	ValidationError string = "Validation error"
 	UnmarshalError  string = "JSON unmarshalling failed"
 	MailError       string = "Mail request error"
+	ToSoonCode      string = "codegen_request_to_soon"
+	NotFoundCode    string = "user_not_found_by_email"
 )
 
 var (

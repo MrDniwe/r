@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"database/sql"
+
+	"github.com/lib/pq"
 	"github.com/mrdniwe/r/internal/models"
 	e "github.com/mrdniwe/r/pkg/errors"
 	"github.com/pkg/errors"
@@ -31,5 +34,27 @@ func (a *ArcticleRepo) UserExists(email string) (bool, error) {
 }
 
 func (a *ArcticleRepo) NewRecoveryHash(email string) (models.RecoveryData, error) {
-	return models.RecoveryData{"Lasso", "ceperagrey@gmail.com", "qazwsx"}, nil
+	query := `select create_recovery_hash($1) as hash, login from users u where lower($1) = lower(u.email);`
+	row := a.Srv.Db.QueryRow(query, email)
+	var hash, login string
+	if err := row.Scan(&hash, &login); err != nil {
+		switch err := err.(type) {
+		case *pq.Error:
+			switch err.Message {
+			case e.ToSoonCode:
+				return models.RecoveryData{}, e.DelayErr
+			case e.NotFoundCode:
+				return models.RecoveryData{}, e.NotFoundErr
+			default:
+				return models.RecoveryData{}, e.ServerErr
+
+			}
+		default:
+			if err == sql.ErrNoRows {
+				return models.RecoveryData{}, e.NotFoundErr
+			}
+			return models.RecoveryData{}, e.ServerErr
+		}
+	}
+	return models.RecoveryData{login, email, hash}, nil
 }

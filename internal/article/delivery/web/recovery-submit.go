@@ -8,7 +8,7 @@ import (
 	"github.com/mrdniwe/r/pkg/errors"
 )
 
-func (ad *ArticleDelivery) RecoverySubmit() http.HandlerFunc {
+func (ad *ArticleDelivery) RecoverySubmitPost() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// проверяем наличие, валидность и наличие емейла в БД
 		if err := r.ParseForm(); err != nil {
@@ -29,7 +29,7 @@ func (ad *ArticleDelivery) RecoverySubmit() http.HandlerFunc {
 		if err != nil {
 			switch err {
 			case errors.DelayErr:
-				http.Redirect(w, r, "/recovery-request-delay", http.StatusMovedPermanently)
+				http.Redirect(w, r, fmt.Sprintf("/recovery-request-delay?email=%v", email), http.StatusMovedPermanently)
 				return
 			default:
 				errors.HandleError(err, w, r)
@@ -45,7 +45,20 @@ func (ad *ArticleDelivery) RecoverySubmit() http.HandlerFunc {
 			"Восстановление пароля",
 			"Восстановление пароля зарегистрированного пользователя",
 		}
-		p := models.SubmitPage{page, "", ""}
+		code := r.FormValue("code")
+		p := models.SubmitPage{page, "", code}
+		ad.T.Items["recovery-submit"].Execute(w, p)
+	}
+}
+
+func (ad *ArticleDelivery) RecoverySubmitGet() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		page := models.Page{
+			"Восстановление пароля",
+			"Восстановление пароля зарегистрированного пользователя",
+		}
+		code := r.FormValue("code")
+		p := models.SubmitPage{page, "", code}
 		ad.T.Items["recovery-submit"].Execute(w, p)
 	}
 }

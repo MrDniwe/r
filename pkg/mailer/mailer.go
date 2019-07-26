@@ -10,32 +10,30 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-type templateSet map[string]*template.Template
-
 type Mailer struct {
 	Logger    *logrus.Logger
 	Conf      *viper.Viper
 	Dialer    *gomail.Dialer
-	Templates templateSet
+	Templates *template.Template
 }
 
 type recoveryMailData struct {
-	login string
-	host  string
-	code  string
+	Login string
+	Host  string
+	Code  string
 }
 
 func New(l *logrus.Logger, c *viper.Viper) *Mailer {
 	d := gomail.NewPlainDialer(c.GetString("mailServer"), c.GetInt("mailPort"), c.GetString("mailUser"), c.GetString("mailPassword"))
-	t := templateSet{}
-	t["recovery"] = template.New(`
+	t, _ := template.New("recovery").Parse(`
 	<h1>Восстановление пароля</h1>
 	<p>
-		Вы запросили восстановление пароля на сайте region57 для логина {{.login}}
+		Вы запросили восстановление пароля на сайте Region57 для логина <b>{{.Login}}</b>
 	</p>
 	<p>
-		Для восстановления пароля пройдите 
-		<a href="{{.host}}/recovery/{{.code}}" target="_blank">по ссылке</a>
+		Для восстановления пароля пройдите по ссылке
+		<a href="{{.Host}}/recovery-submit?code={{.Code}}" target="_blank">{{.Host}}/recovery-submit</a>, введите в поле этот код <i>{{.Code}}</i>
+		и запросите смену пароля.
 	</p>
 	<p>
 		Если вы не запрашивали восстановления, вероятно, это действия злоумышленников.
@@ -51,8 +49,8 @@ func (m *Mailer) SendRecovery(login string, email string, code string) error {
 	msg.SetAddressHeader("To", email, login)
 	msg.SetHeader("Subject", "Восстановление пароля")
 	var body strings.Builder
-	data := recoveryMailData{login, m.Conf.GetString("code"), code}
-	m.Templates["recovery"].Execute(&body, data)
+	data := recoveryMailData{login, m.Conf.GetString("host"), code}
+	m.Templates.ExecuteTemplate(&body, "recovery", data)
 	msg.SetBody("text/html", body.String())
 	if err := m.Dialer.DialAndSend(msg); err != nil {
 		m.Logger.WithFields(logrus.Fields{
