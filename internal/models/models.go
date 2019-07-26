@@ -58,6 +58,12 @@ type RecoveryPage struct {
 	Email string
 }
 
+type SubmitPage struct {
+	Page  Page
+	Error string
+	Code  string
+}
+
 type ListPage struct {
 	Page Page
 	List ArticleList
@@ -78,6 +84,12 @@ type ErrorPage struct {
 	Page             Page
 	ErrorTitle       string
 	ErrorDescription string
+}
+
+type RecoveryData struct {
+	Login string
+	Email string
+	Code  string
 }
 
 func (lp *ArticleList) NextPage() int {

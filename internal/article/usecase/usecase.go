@@ -13,6 +13,8 @@ type ArticleUsecase interface {
 	SingleArticle(id string) (*models.Article, error)
 	LastArticles(amount, offset int) ([]*models.Article, error)
 	TotalPagesCount() (int, error)
+	CheckEmailExists(string) (bool, error)
+	NewRecoveryHash(string) (models.RecoveryData, error)
 }
 
 type ArticleUC struct {

@@ -20,5 +20,6 @@ func New() *templator.Pages {
 	p.Add("template/pages/list.html", "list")
 	p.Add("template/errors/error.html", "error")
 	p.Add("template/pages/recovery-request.html", "recovery-request")
+	p.Add("template/pages/recovery-submit.html", "recovery-submit")
 	return p
 }

@@ -2,8 +2,9 @@ package errors
 
 import (
 	"errors"
-	ers "github.com/pkg/errors"
 	"net/http"
+
+	ers "github.com/pkg/errors"
 )
 
 const (
@@ -19,6 +20,7 @@ var (
 	ServerErr     = errors.New("Server error")
 	ForbiddenErr  = errors.New("Forbidden")
 	UnknownErr    = errors.New("Unknown error")
+	DelayErr      = errors.New("Delay error")
 )
 
 type StackTracer interface {

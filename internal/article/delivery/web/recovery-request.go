@@ -23,7 +23,8 @@ func (ad *ArticleDelivery) RecoveryRequestNotFound() http.HandlerFunc {
 			"Восстановление пароля (email не найден)",
 			"Восстановление пароля зарегистрированного пользователя",
 		}
-		p := models.RecoveryPage{page, "Пользователь с указанной почтой у нас ещё не зарегистрирован", ""}
+		email := r.FormValue("email")
+		p := models.RecoveryPage{page, "Пользователь с указанной почтой у нас ещё не зарегистрирован", email}
 		ad.T.Items["recovery-request"].Execute(w, p)
 	}
 }
@@ -34,7 +35,8 @@ func (ad *ArticleDelivery) RecoveryRequestDelay() http.HandlerFunc {
 			"Восстановление пароля (слишком частые запросы)",
 			"Восстановление пароля зарегистрированного пользователя",
 		}
-		p := models.RecoveryPage{page, "Вы недавно отправляли запрос на восстановление пароля, новый можно будет отправить только через минуту", ""}
+		email := r.FormValue("email")
+		p := models.RecoveryPage{page, "Вы недавно отправляли запрос на восстановление пароля, новый можно будет отправить только через минуту", email}
 		ad.T.Items["recovery-request"].Execute(w, p)
 	}
 }
