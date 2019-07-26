@@ -500,3 +500,8 @@ footer .copyright {
 .comments ul li .comment-signature {
   color: #b12f2f;
 }
+
+.recovery_request_form {
+  margin-top: 97px;
+  margin-bottom: 20%;
+}

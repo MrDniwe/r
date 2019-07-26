@@ -48,6 +48,16 @@ type User struct {
 	Email string `json:"email"`
 }
 
+type EmptyPage struct {
+	Page Page
+}
+
+type RecoveryPage struct {
+	Page  Page
+	Error string
+	Email string
+}
+
 type ListPage struct {
 	Page Page
 	List ArticleList
