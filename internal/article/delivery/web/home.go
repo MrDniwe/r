@@ -9,6 +9,7 @@ import (
 
 func (ad *ArticleDelivery) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		isAuth := isAuthorized(r)
 		articles, err := ad.Usecase.LastArticles(ad.Srv.Conf.GetInt("pageAmount"), 0)
 		if err != nil {
 			ad.Srv.Logger.Info("err in last")
@@ -27,7 +28,7 @@ func (ad *ArticleDelivery) Home() http.HandlerFunc {
 			total,
 			1,
 		}
-		page := models.Page{topArticle.Header, topArticle.Lead}
+		page := models.Page{topArticle.Header, topArticle.Lead, isAuth}
 		mp := &models.HomePage{page, topArticle, restArticles}
 		ad.T.Items["mainpage"].Execute(w, mp)
 	}

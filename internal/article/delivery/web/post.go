@@ -11,6 +11,7 @@ import (
 func (ad *ArticleDelivery) Post() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
+		isAuth := isAuthorized(r)
 		a, err := ad.Usecase.SingleArticle(vars["id"])
 		if err != nil {
 			e.HandleError(err, w, r)
@@ -19,6 +20,7 @@ func (ad *ArticleDelivery) Post() http.HandlerFunc {
 		page := models.Page{
 			a.Header,
 			a.Lead,
+			isAuth,
 		}
 		pp := models.ArticlePage{
 			page,

@@ -20,6 +20,7 @@ func NewDelivery(uc usecase.ArticleUsecase, r *mux.Router, srv *server.Server) {
 	view := view.New()
 	ad := &ArticleDelivery{uc, view, srv}
 	r.NotFoundHandler = ad
+	r.Use(ad.CookieAuthMiddleware)
 	r.HandleFunc("/", ad.Home()).Methods("GET")
 	r.HandleFunc("/post/{id}", ad.Post()).Methods("GET")
 	r.HandleFunc("/info/{page}", ad.Static()).Methods("GET")

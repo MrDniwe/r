@@ -13,6 +13,7 @@ import (
 func (ad *ArticleDelivery) List() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
+		isAuth := isAuthorized(r)
 		pAmount := ad.Srv.Conf.GetInt("pageAmount")
 		pNum, err := strconv.Atoi(vars["page"])
 		if err != nil {
@@ -42,6 +43,7 @@ func (ad *ArticleDelivery) List() http.HandlerFunc {
 		page := models.Page{
 			"Список статей, страница " + vars["page"],
 			"Список статей, страница " + vars["page"],
+			isAuth,
 		}
 		list := models.ArticleList{
 			articles,

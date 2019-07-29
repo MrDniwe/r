@@ -21,6 +21,17 @@
         <!-- <li class="nav-item"> -->
         <!--   <a class="nav-link" href="/info/about">О нас</a> -->
         <!-- </li> -->
+        <li class="nav-item">
+          {{ if .Page.IsAuthorized }}
+          <a class="nav-link" href="/sign-out" title="Выход">
+            <i class="fas fa-sign-out-alt 2x"></i>
+          </a>
+          {{ else }}
+          <a class="nav-link" href="/sign-in" title="Вход">
+            <i class="fas fa-sign-in-alt 2x"></i>
+          </a>
+          {{ end }}
+        </li>
       </ul>
     </div>
   </div>

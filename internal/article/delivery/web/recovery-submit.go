@@ -10,6 +10,7 @@ import (
 
 func (ad *ArticleDelivery) RecoverySubmitPost() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		isAuth := isAuthorized(r)
 		// проверяем наличие, валидность и наличие емейла в БД
 		if err := r.ParseForm(); err != nil {
 			http.Redirect(w, r, "/errors/server", http.StatusMovedPermanently)
@@ -44,6 +45,7 @@ func (ad *ArticleDelivery) RecoverySubmitPost() http.HandlerFunc {
 		page := models.Page{
 			"Восстановление пароля",
 			"Восстановление пароля зарегистрированного пользователя",
+			isAuth,
 		}
 		code := r.FormValue("code")
 		p := models.SubmitPage{page, "", code}
@@ -53,9 +55,11 @@ func (ad *ArticleDelivery) RecoverySubmitPost() http.HandlerFunc {
 
 func (ad *ArticleDelivery) RecoverySubmitGet() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		isAuth := isAuthorized(r)
 		page := models.Page{
 			"Восстановление пароля",
 			"Восстановление пароля зарегистрированного пользователя",
+			isAuth,
 		}
 		code := r.FormValue("code")
 		p := models.SubmitPage{page, "", code}

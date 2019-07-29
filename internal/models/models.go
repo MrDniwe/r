@@ -6,8 +6,9 @@ import (
 )
 
 type Page struct {
-	Title       string
-	Description string
+	Title        string
+	Description  string
+	IsAuthorized bool
 }
 
 type ArticleList struct {
