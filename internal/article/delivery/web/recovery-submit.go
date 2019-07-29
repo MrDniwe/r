@@ -13,7 +13,7 @@ func (ad *ArticleDelivery) RecoverySubmitPost() http.HandlerFunc {
 		isAuth := isAuthorized(r)
 		// проверяем наличие, валидность и наличие емейла в БД
 		if err := r.ParseForm(); err != nil {
-			http.Redirect(w, r, "/errors/server", http.StatusMovedPermanently)
+			http.Redirect(w, r, "/errors/server", http.StatusTemporaryRedirect)
 		}
 		email := r.Form.Get("email")
 		exists, err := ad.Usecase.CheckEmailExists(email)

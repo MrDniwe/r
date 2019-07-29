@@ -22,6 +22,6 @@ func New() *templator.Pages {
 	p.Add("template/pages/recovery-request.html", "recovery-request")
 	p.Add("template/pages/recovery-submit.html", "recovery-submit")
 	p.Add("template/pages/sign-in.html", "sign-in")
-	p.Add("template/pages/registragion.html", "registragion")
+	// p.Add("template/pages/registragion.html", "registragion")
 	return p
 }

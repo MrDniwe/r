@@ -87,6 +87,17 @@ type ErrorPage struct {
 	ErrorDescription string
 }
 
+type SignIn struct {
+	Email         string
+	EmailError    string
+	PasswordError string
+}
+
+type SignInPage struct {
+	Page   Page
+	SignIn SignIn
+}
+
 type RecoveryData struct {
 	Login string
 	Email string

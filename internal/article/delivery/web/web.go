@@ -30,6 +30,7 @@ func NewDelivery(uc usecase.ArticleUsecase, r *mux.Router, srv *server.Server) {
 	r.HandleFunc("/recovery-request-delay", ad.RecoveryRequestDelay()).Methods("GET")
 	r.HandleFunc("/recovery-submit", ad.RecoverySubmitPost()).Methods("POST")
 	r.HandleFunc("/recovery-submit", ad.RecoverySubmitGet()).Methods("GET")
+	r.HandleFunc("/sign-in", ad.SignIn()).Methods("GET", "POST")
 	r.HandleFunc("/favicon.ico", ad.Favicon()).Methods("GET")
 	// errors
 	errh := r.PathPrefix("/errors/").Subrouter()
