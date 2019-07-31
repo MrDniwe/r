@@ -9,8 +9,8 @@ type ArticleRepository interface {
 	UserExists(string) (bool, error)
 	NewRecoveryHash(string) (models.RecoveryData, error)
 	UserAuth(email, password string) (models.AuthData, error)
-	// CheckToken(accessToken string) error
-	// RefreshToken(string) (models.AuthData, error)
+	CheckToken(accessToken string) error
+	RefreshToken(refreshToken string) (models.AuthData, error)
 	// LogOutToken(accessToken string) error
 	// LogOutAllTokens(accessToken string) error
 	// ChangePassword(email, oldPassword, newPassword string) (models.AuthData, error)

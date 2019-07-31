@@ -117,3 +117,29 @@ func (a *ArcticleRepo) CheckToken(accessToken string) error {
 	}
 	return nil
 }
+
+func (a *ArcticleRepo) RefreshToken(refreshToken string) (models.AuthData, error) {
+	query := `select * from refresh_tokens($1)`
+	var auth models.AuthData
+	row := a.Srv.Db.QueryRow(query, refreshToken)
+	if err := row.Scan(&auth.AccessToken, &auth.RefreshToken); err != nil {
+		switch err := err.(type) {
+		case *pq.Error:
+			switch err.Message {
+			case e.TokenNotFound:
+				return models.AuthData{}, e.InvalidTokenErr
+			default:
+				a.Srv.Logger.WithFields(logrus.Fields{
+					"type": e.PostgresError,
+				}).Error(err)
+				return models.AuthData{}, e.ServerErr
+			}
+		default:
+			a.Srv.Logger.WithFields(logrus.Fields{
+				"type": e.PostgresError,
+			}).Error(err)
+			return models.AuthData{}, e.ServerErr
+		}
+	}
+	return auth, nil
+}

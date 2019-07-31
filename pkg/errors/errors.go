@@ -15,6 +15,7 @@ const (
 	ToSoonCode      string = "codegen_request_to_soon"
 	NotFoundCode    string = "user_not_found_by_email"
 	WrongPassword   string = "wrong_password"
+	TokenNotFound   string = "token_not_found"
 )
 
 var (
