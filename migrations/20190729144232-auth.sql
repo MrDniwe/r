@@ -59,13 +59,13 @@ create trigger update_updated_at before update
 -- +migrate StatementBegin
 create or replace function is_valid_access_token(token uuid) returns boolean as $body$
 declare
-  token_time timestamp with time zone;
+  upd timestamp with time zone;
 begin
-  select updated_at from tokens t where t.access_token = token;
+  select updated_at into upd from tokens t where t.access_token = token;
   if not found then
-    raise exception 'token_not_found' using errcode = 'no_data_found';
+    return false;
   end if;
-  if updated_at + interval '5 minutes' > current_timestamp then
+  if upd + interval '5 minutes' > current_timestamp then
     return true;
   end if;
   return false;
@@ -75,7 +75,7 @@ $body$ language plpgsql;
 
 --функция обновления токена по refresh_token
 -- +migrate StatementBegin
-create or replace function refresh_tokens(rtoken uuid) returns record as $body$
+create or replace function refresh_tokens(rtoken uuid, out a_t uuid, out r_t uuid)as $body$
 declare
   tkns record;
 begin
@@ -89,18 +89,19 @@ begin
         t.refresh_token = rtoken
       returning 
         access_token, refresh_token
-    into tkns;
+    into strict tkns;
   exception
     when no_data_found then raise exception 'token_not_found' using errcode = 'no_data_found';
   end;
-  return tkns;
+  a_t := tkns.access_token;
+  r_t := tkns.refresh_token;
 end;
 $body$ language plpgsql;
 -- +migrate StatementEnd
 
 -- функция создания новой пары токенов
 -- +migrate StatementBegin
-create or replace function new_tokens(userid uuid) returns record as $body$
+create or replace function new_tokens(userid uuid, out a_t uuid, out r_t uuid) as $body$
 declare
   tkns record;
   user_exists boolean; 
@@ -111,8 +112,10 @@ begin
     returning access_token, refresh_token into strict tkns;
   exception
     when no_data_found then raise exception 'user_not_found';
+    when foreign_key_violation then raise exception 'user_not_found';
   end;
-  return tkns;
+  a_t := tkns.access_token;
+  r_t := tkns.refresh_token;
 end;
 $body$ language plpgsql;
 -- +migrate StatementEnd
