@@ -27,7 +27,7 @@ func (ad *ArticleDelivery) SignIn() http.HandlerFunc {
 			email := r.Form.Get("email")
 			email := r.Form.Get("password")
 			// если всё ок, ставим куки и редиректаем на главную и выходим
-			sessionUuid, refreshUuid, err := ad.Usecase.UserAuth(email, password)
+			auth, err := ad.Usecase.UserAuth(email, password)
 			// если не ок, заполняем ошибки и отрисовываем форму и выходим
 		}
 		// отрисовываем пустую форму

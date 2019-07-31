@@ -58,3 +58,31 @@ func (a *ArcticleRepo) NewRecoveryHash(email string) (models.RecoveryData, error
 	}
 	return models.RecoveryData{login, email, hash}, nil
 }
+
+func (a *ArcticleRepo) UserAuth(email, password string) (models.AuthData, error) {
+	query := `select email_has_password($1, $2)`
+	row := a.Srv.Db.QueryRow(query, email)
+	var foundUuid string
+	if err := row.Scan(&foundUuid); err != nil {
+		switch err := err.(type) {
+		case *pq.Error:
+			switch err.Message {
+			case e.NotFoundCode:
+				return models.AuthData{}, e.NotFoundErr
+			case e.WrongPassword:
+				return models.AuthData{}, e.WrongPasswordErr
+			default:
+				return models.AuthData{}, e.ServerErr
+			}
+		default:
+			return models.AuthData{}, e.ServerErr
+		}
+	}
+	query = `select * from new_tokens($1)`
+	row = a.Srv.Db.QueryRow(query, foundUuid)
+	var auth models.AuthData
+	if err := row.Scan(&auth.AccessToken, &auth.RefreshToken); err != nil {
+		return models.AuthData{}, e.ServerErr
+	}
+	return auth, nil
+}

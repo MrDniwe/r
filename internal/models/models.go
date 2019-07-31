@@ -104,6 +104,11 @@ type RecoveryData struct {
 	Code  string
 }
 
+type AuthData struct {
+	AccessToken  string
+	RefreshToken string
+}
+
 func (lp *ArticleList) NextPage() int {
 	return lp.CurrentPage + 1
 }

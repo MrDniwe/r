@@ -14,15 +14,17 @@ const (
 	MailError       string = "Mail request error"
 	ToSoonCode      string = "codegen_request_to_soon"
 	NotFoundCode    string = "user_not_found_by_email"
+	WrongPassword   string = "wrong_password"
 )
 
 var (
-	BadRequestErr = errors.New("Bad request")
-	NotFoundErr   = errors.New("Not found")
-	ServerErr     = errors.New("Server error")
-	ForbiddenErr  = errors.New("Forbidden")
-	UnknownErr    = errors.New("Unknown error")
-	DelayErr      = errors.New("Delay error")
+	BadRequestErr    = errors.New("Bad request")
+	NotFoundErr      = errors.New("Not found")
+	ServerErr        = errors.New("Server error")
+	ForbiddenErr     = errors.New("Forbidden")
+	UnknownErr       = errors.New("Unknown error")
+	DelayErr         = errors.New("Delay error")
+	WrongPasswordErr = errors.New("Wrong password")
 )
 
 type StackTracer interface {

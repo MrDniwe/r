@@ -15,6 +15,7 @@ type ArticleUsecase interface {
 	TotalPagesCount() (int, error)
 	CheckEmailExists(string) (bool, error)
 	NewRecoveryHash(string) (models.RecoveryData, error)
+	UserAuth(email, password string) (models.AuthData, error)
 }
 
 type ArticleUC struct {

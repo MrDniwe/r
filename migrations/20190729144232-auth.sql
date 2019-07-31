@@ -25,19 +25,18 @@ create trigger email_to_lower before insert or update on users
 
 -- функция для аутентификации по Email
 -- +migrate StatementBegin
-create or replace function email_has_password(eml varchar, pass varchar) returns boolean as $body$
+create or replace function email_has_password(eml varchar, pass varchar) returns uuid as $body$
 declare 
-  has_password boolean;
-  pass_hash varchar;
+  rec record;
 begin
-  select u.password into pass_hash from users u where u.email = eml;
+  select u.password, u.uuid into rec from users u where u.email = eml;
   if not found then
-    raise exception 'user_not_found_by_email' using errcode = 'no_data_found';
+    raise exception 'user_not_found_by_email';
   end if;
-  if pass_hash = crypt(pass, pass_hash) then
-    return true;
+  if rec.password != crypt(pass, rec.password) then
+    raise exception 'wrong_password';
   end if;
-  return false;
+  return rec.uuid;
 end;
 $body$ language plpgsql;
 -- +migrate StatementEnd
@@ -93,6 +92,7 @@ begin
   exception
     when no_data_found then raise exception 'token_not_found' using errcode = 'no_data_found';
   end;
+  update users set last_visit = current_timestamp;
   a_t := tkns.access_token;
   r_t := tkns.refresh_token;
 end;
@@ -114,6 +114,7 @@ begin
     when no_data_found then raise exception 'user_not_found';
     when foreign_key_violation then raise exception 'user_not_found';
   end;
+  update users set last_visit = current_timestamp;
   a_t := tkns.access_token;
   r_t := tkns.refresh_token;
 end;

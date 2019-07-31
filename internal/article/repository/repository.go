@@ -8,4 +8,5 @@ type ArticleRepository interface {
 	PagesCount(int) (int, error)
 	UserExists(string) (bool, error)
 	NewRecoveryHash(string) (models.RecoveryData, error)
+	UserAuth(email, password string) (models.AuthData, error)
 }

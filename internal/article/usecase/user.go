@@ -9,3 +9,7 @@ func (u *ArticleUC) CheckEmailExists(email string) (bool, error) {
 func (u *ArticleUC) NewRecoveryHash(email string) (models.RecoveryData, error) {
 	return u.Repo.NewRecoveryHash(email)
 }
+
+func (u *ArticleUC) UserAuth(email, password string) (models.AuthData, error) {
+	return u.Repo.UserAuth(email, password string) (models.AuthData, error)
+}
