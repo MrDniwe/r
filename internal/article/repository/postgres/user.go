@@ -46,6 +46,9 @@ func (a *ArcticleRepo) NewRecoveryHash(email string) (models.RecoveryData, error
 			case e.NotFoundCode:
 				return models.RecoveryData{}, e.NotFoundErr
 			default:
+				a.Srv.Logger.WithFields(logrus.Fields{
+					"type": e.PostgresError,
+				}).Error(err)
 				return models.RecoveryData{}, e.ServerErr
 
 			}
@@ -53,6 +56,9 @@ func (a *ArcticleRepo) NewRecoveryHash(email string) (models.RecoveryData, error
 			if err == sql.ErrNoRows {
 				return models.RecoveryData{}, e.NotFoundErr
 			}
+			a.Srv.Logger.WithFields(logrus.Fields{
+				"type": e.PostgresError,
+			}).Error(err)
 			return models.RecoveryData{}, e.ServerErr
 		}
 	}
@@ -72,9 +78,15 @@ func (a *ArcticleRepo) UserAuth(email, password string) (models.AuthData, error)
 			case e.WrongPassword:
 				return models.AuthData{}, e.WrongPasswordErr
 			default:
+				a.Srv.Logger.WithFields(logrus.Fields{
+					"type": e.PostgresError,
+				}).Error(err)
 				return models.AuthData{}, e.ServerErr
 			}
 		default:
+			a.Srv.Logger.WithFields(logrus.Fields{
+				"type": e.PostgresError,
+			}).Error(err)
 			return models.AuthData{}, e.ServerErr
 		}
 	}
@@ -82,7 +94,26 @@ func (a *ArcticleRepo) UserAuth(email, password string) (models.AuthData, error)
 	row = a.Srv.Db.QueryRow(query, foundUuid)
 	var auth models.AuthData
 	if err := row.Scan(&auth.AccessToken, &auth.RefreshToken); err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
 		return models.AuthData{}, e.ServerErr
 	}
 	return auth, nil
+}
+
+func (a *ArcticleRepo) CheckToken(accessToken string) error {
+	query := `select is_valid_access_token($1)`
+	var isValid bool
+	row := a.Srv.Db.QueryRow(query, accessToken)
+	if err := row.Scan(&isValid); err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
+		return e.ServerErr
+	}
+	if !isValid {
+		return e.InvalidTokenErr
+	}
+	return nil
 }

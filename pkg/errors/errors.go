@@ -25,6 +25,7 @@ var (
 	UnknownErr       = errors.New("Unknown error")
 	DelayErr         = errors.New("Delay error")
 	WrongPasswordErr = errors.New("Wrong password")
+	InvalidTokenErr  = errors.New("Invalid token")
 )
 
 type StackTracer interface {
