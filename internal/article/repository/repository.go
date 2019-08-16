@@ -11,8 +11,8 @@ type ArticleRepository interface {
 	UserAuth(email, password string) (models.AuthData, error)
 	CheckToken(accessToken string) error
 	RefreshToken(refreshToken string) (models.AuthData, error)
-	// LogOutToken(accessToken string) error
-	// LogOutAllTokens(accessToken string) error
+	LogOutToken(accessToken string) error
+	LogOutAllTokens(accessToken string) error
 	// ChangePassword(email, oldPassword, newPassword string) (models.AuthData, error)
 	// RecoveryPassword(uuid, password) error
 }

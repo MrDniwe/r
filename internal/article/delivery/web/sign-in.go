@@ -63,7 +63,9 @@ func (ad *ArticleDelivery) SignIn() http.HandlerFunc {
 	}
 }
 
+// SetAuthCookies - creates auth cookies for user
 func (ad *ArticleDelivery) SetAuthCookies(w http.ResponseWriter, auth models.AuthData) {
+	//TODO: добавить проверку домена из конфига
 	accessTokenCookie := &http.Cookie{
 		Name:     "r57AT",
 		Value:    auth.AccessToken,
@@ -80,4 +82,35 @@ func (ad *ArticleDelivery) SetAuthCookies(w http.ResponseWriter, auth models.Aut
 	}
 	http.SetCookie(w, accessTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
+}
+
+// DropAuthCookies - removes auth cookies due logout
+func (ad *ArticleDelivery) DropAuthCookies(w http.ResponseWriter) {
+	//TODO: добавить проверку домена из конфига
+	accessTokenCookie := &http.Cookie{
+		Name:     "r57AT",
+		Expires:  time.Now().Add(time.Minute * 5),
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+	refreshTokenCookie := &http.Cookie{
+		Name:     "r57RT",
+		Expires:  time.Now().Add(time.Hour * 24 * 180),
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+	http.SetCookie(w, accessTokenCookie)
+	http.SetCookie(w, refreshTokenCookie)
+}
+
+// SignOut - logs the user out
+func (ad *ArticleDelivery) SignOut() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// если пользователь не авторизован, то игнорируем и перебрасываем на главную
+		isAuth := isAuthorized(r)
+		if !isAuth {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+	}
 }

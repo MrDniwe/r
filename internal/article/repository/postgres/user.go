@@ -143,3 +143,27 @@ func (a *ArcticleRepo) RefreshToken(refreshToken string) (models.AuthData, error
 	}
 	return auth, nil
 }
+
+func (a *ArcticleRepo) LogOutToken(accessToken string) error {
+	query := `delete from tokens where access_token =$1`
+	_, err := a.Srv.Db.Exec(query, accessToken)
+	if err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
+		return e.ServerErr
+	}
+	return nil
+}
+
+func (a *ArcticleRepo) LogOutAllTokens(accessToken string) error {
+	query := `delete from tokens where user_uuid = (select user_uuid from tokens where access_token = $1)`
+	_, err := a.Srv.Db.Exec(query, accessToken)
+	if err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
+		return e.ServerErr
+	}
+	return nil
+}
