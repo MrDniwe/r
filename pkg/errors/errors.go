@@ -36,16 +36,16 @@ type StackTracer interface {
 func HandleError(err error, w http.ResponseWriter, r *http.Request) {
 	switch err {
 	case BadRequestErr:
-		http.Redirect(w, r, "/errors/badrequest", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/badrequest", http.StatusSeeOther)
 	case NotFoundErr:
-		http.Redirect(w, r, "/errors/notfound", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/notfound", http.StatusSeeOther)
 	case ServerErr:
-		http.Redirect(w, r, "/errors/server", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/server", http.StatusSeeOther)
 	case ForbiddenErr:
-		http.Redirect(w, r, "/errors/forbidden", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/forbidden", http.StatusSeeOther)
 	case UnknownErr:
-		http.Redirect(w, r, "/errors/unknown", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/unknown", http.StatusSeeOther)
 	default:
-		http.Redirect(w, r, "/errors/unknown", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/errors/unknown", http.StatusSeeOther)
 	}
 }

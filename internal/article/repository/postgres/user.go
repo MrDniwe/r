@@ -67,7 +67,7 @@ func (a *ArcticleRepo) NewRecoveryHash(email string) (models.RecoveryData, error
 
 func (a *ArcticleRepo) UserAuth(email, password string) (models.AuthData, error) {
 	query := `select email_has_password($1, $2)`
-	row := a.Srv.Db.QueryRow(query, email)
+	row := a.Srv.Db.QueryRow(query, email, password)
 	var foundUuid string
 	if err := row.Scan(&foundUuid); err != nil {
 		switch err := err.(type) {

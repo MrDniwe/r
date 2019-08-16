@@ -5,12 +5,14 @@ import (
 	"time"
 )
 
+// Page is a set of common params for all viwable HTML template pages
 type Page struct {
 	Title        string
 	Description  string
 	IsAuthorized bool
 }
 
+// ArticleList represents a slice of articles with params for drawing pagination
 type ArticleList struct {
 	Articles    []*Article
 	TotalPages  int
@@ -87,6 +89,7 @@ type ErrorPage struct {
 	ErrorDescription string
 }
 
+// SignIn - data set for rendering sign in page with a probable error
 type SignIn struct {
 	Email         string
 	EmailError    string
@@ -104,6 +107,7 @@ type RecoveryData struct {
 	Code  string
 }
 
+// AuthData represents a combination of tokens for user to be successfully authorized
 type AuthData struct {
 	AccessToken  string
 	RefreshToken string

@@ -11,5 +11,5 @@ func (u *ArticleUC) NewRecoveryHash(email string) (models.RecoveryData, error) {
 }
 
 func (u *ArticleUC) UserAuth(email, password string) (models.AuthData, error) {
-	return u.Repo.UserAuth(email, password string) (models.AuthData, error)
+	return u.Repo.UserAuth(email, password)
 }
