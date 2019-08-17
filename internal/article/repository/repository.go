@@ -13,6 +13,6 @@ type ArticleRepository interface {
 	RefreshToken(refreshToken string) (models.AuthData, error)
 	LogOutToken(accessToken string) error
 	LogOutAllTokens(accessToken string) error
-	// ChangePassword(email, oldPassword, newPassword string) (models.AuthData, error)
+	ChangePassword(email, oldPassword, newPassword string) (models.AuthData, error)
 	// RecoveryPassword(uuid, password) error
 }

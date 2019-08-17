@@ -112,5 +112,23 @@ func (ad *ArticleDelivery) SignOut() http.HandlerFunc {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
+		// ломимся в базу за логаутом
+		// удаляем кукизы
 	}
+}
+
+// ReadAuthCookies - tries to read auth cookies and returns tokens from there as AuthData
+func (ad *ArticleDelivery) ReadAuthCookies(r *http.Request) (models.AuthData, error) {
+	atCookie, err := r.Cookie("r57AT")
+	if err != nil {
+		return models.AuthData{}, err
+	}
+	rtCookie, err := r.Cookie("r57RT")
+	if err != nil {
+		return models.AuthData{}, err
+	}
+	return models.AuthData{
+		AccessToken:  atCookie.Value,
+		RefreshToken: rtCookie.Value,
+	}, nil
 }

@@ -16,6 +16,8 @@ type ArticleUsecase interface {
 	CheckEmailExists(string) (bool, error)
 	NewRecoveryHash(string) (models.RecoveryData, error)
 	UserAuth(email, password string) (models.AuthData, error)
+	CheckAccessToken(string) error
+	RefreshToken(string) (models.AuthData, error)
 }
 
 type ArticleUC struct {
