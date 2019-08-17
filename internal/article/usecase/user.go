@@ -1,6 +1,9 @@
 package usecase
 
-import "github.com/mrdniwe/r/internal/models"
+import (
+	"github.com/mrdniwe/r/internal/models"
+	e "github.com/mrdniwe/r/pkg/errors"
+)
 
 func (u *ArticleUC) CheckEmailExists(email string) (bool, error) {
 	return u.Repo.UserExists(email)
@@ -19,6 +22,9 @@ func (u *ArticleUC) UserLogout(accessToken string) error {
 }
 
 func (u *ArticleUC) CheckAccessToken(accessToken string) error {
+	if accessToken == "" {
+		return e.InvalidTokenErr
+	}
 	return u.Repo.CheckToken(accessToken)
 }
 

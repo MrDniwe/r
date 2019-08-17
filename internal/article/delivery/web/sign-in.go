@@ -72,6 +72,7 @@ func (ad *ArticleDelivery) SetAuthCookies(w http.ResponseWriter, auth models.Aut
 		Expires:  time.Now().Add(time.Minute * 5),
 		MaxAge:   5 * 60,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	refreshTokenCookie := &http.Cookie{
 		Name:     "r57RT",
@@ -79,6 +80,7 @@ func (ad *ArticleDelivery) SetAuthCookies(w http.ResponseWriter, auth models.Aut
 		Expires:  time.Now().Add(time.Hour * 24 * 180),
 		MaxAge:   60 * 60 * 24 * 180,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, accessTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
@@ -92,12 +94,14 @@ func (ad *ArticleDelivery) DropAuthCookies(w http.ResponseWriter) {
 		Expires:  time.Now().Add(time.Minute * 5),
 		MaxAge:   -1,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	refreshTokenCookie := &http.Cookie{
 		Name:     "r57RT",
 		Expires:  time.Now().Add(time.Hour * 24 * 180),
 		MaxAge:   -1,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, accessTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
@@ -119,16 +123,19 @@ func (ad *ArticleDelivery) SignOut() http.HandlerFunc {
 
 // ReadAuthCookies - tries to read auth cookies and returns tokens from there as AuthData
 func (ad *ArticleDelivery) ReadAuthCookies(r *http.Request) (models.AuthData, error) {
+	var at string
 	atCookie, err := r.Cookie("r57AT")
 	if err != nil {
-		return models.AuthData{}, err
+		at = ""
+	} else {
+		at = atCookie.Value
 	}
 	rtCookie, err := r.Cookie("r57RT")
 	if err != nil {
 		return models.AuthData{}, err
 	}
 	return models.AuthData{
-		AccessToken:  atCookie.Value,
+		AccessToken:  at,
 		RefreshToken: rtCookie.Value,
 	}, nil
 }
