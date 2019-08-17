@@ -167,3 +167,59 @@ func (a *ArcticleRepo) LogOutAllTokens(accessToken string) error {
 	}
 	return nil
 }
+
+func (a *ArcticleRepo) LogOutAllTokensByEmail(email string) error {
+	query := `delete from tokens where user_uuid = (select uuid from users where email = $1)`
+	_, err := a.Srv.Db.Exec(query, email)
+	if err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
+		return e.ServerErr
+	}
+	return nil
+}
+
+func (a *ArcticleRepo) ChangePassword(email, oldPassword, newPassword string) (models.AuthData, error) {
+	// проверяем правильность старого пароля
+	query := `select email_has_password($1, $2)`
+	row := a.Srv.Db.QueryRow(query, email, oldPassword)
+	var foundUuid string
+	if err := row.Scan(&foundUuid); err != nil {
+		switch err := err.(type) {
+		case *pq.Error:
+			switch err.Message {
+			case e.NotFoundCode:
+				return models.AuthData{}, e.NotFoundErr
+			case e.WrongPassword:
+				return models.AuthData{}, e.WrongPasswordErr
+			default:
+				a.Srv.Logger.WithFields(logrus.Fields{
+					"type": e.PostgresError,
+				}).Error(err)
+				return models.AuthData{}, e.ServerErr
+			}
+		default:
+			a.Srv.Logger.WithFields(logrus.Fields{
+				"type": e.PostgresError,
+			}).Error(err)
+			return models.AuthData{}, e.ServerErr
+		}
+	}
+	// меняем старый пароль на новый
+	query = `update users set password =$1 where email = $2`
+	_, err := a.Srv.Db.Exec(query, newPassword, email)
+	if err != nil {
+		a.Srv.Logger.WithFields(logrus.Fields{
+			"type": e.PostgresError,
+		}).Error(err)
+		return models.AuthData{}, e.ServerErr
+	}
+	// отзываетм все токены
+	err = a.LogOutAllTokensByEmail(email)
+	if err != nil {
+		return models.AuthData{}, err
+	}
+	// авторизуемся с новым паролем и возвращаем новые токены
+	return a.UserAuth(email, newPassword)
+}
