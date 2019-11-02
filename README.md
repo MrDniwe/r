@@ -1,5 +1,9 @@
 # The R. website backend
 ## Installation
+
+For development purposes, from scratch: `make setup.development`
+
+## Deployment
 Release version is oriented to work in tiny *alpina* docker container. Just follow .Dockerfile to build one.
 
 Sample backend + db combination you can see in *docker-compose.yml* in this repository. 
